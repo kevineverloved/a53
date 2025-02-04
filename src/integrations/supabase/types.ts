@@ -95,6 +95,41 @@ export type Database = {
         }
         Relationships: []
       }
+      quiz_questions: {
+        Row: {
+          correct_answer: string
+          created_at: string | null
+          id: number
+          lesson_id: number | null
+          options: string[]
+          question: string
+        }
+        Insert: {
+          correct_answer: string
+          created_at?: string | null
+          id?: number
+          lesson_id?: number | null
+          options: string[]
+          question: string
+        }
+        Update: {
+          correct_answer?: string
+          created_at?: string | null
+          id?: number
+          lesson_id?: number | null
+          options?: string[]
+          question?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_questions_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "lessons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       sections: {
         Row: {
           created_at: string | null

@@ -8,11 +8,13 @@ import { Heart, ArrowLeft, ArrowRight, Menu } from "lucide-react";
 import { useUserProgress } from "@/hooks/useUserProgress";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
+import Quiz from "@/components/Quiz";
 
 const Section = () => {
   const { sectionId } = useParams();
   const navigate = useNavigate();
   const [currentLessonIndex, setCurrentLessonIndex] = useState(0);
+  const [showQuiz, setShowQuiz] = useState(false);
   const { progress, updateProgress } = useUserProgress();
 
   const { data: lessons, isLoading: lessonsLoading } = useQuery({
@@ -33,23 +35,36 @@ const Section = () => {
   const isLastLesson = currentLessonIndex === (lessons?.length ?? 0) - 1;
   const lives = progress?.lives || 5;
 
-  const handleNext = async () => {
+  const handleNext = () => {
     if (!lessons) return;
+    setShowQuiz(true);
+  };
 
-    if (isLastLesson) {
-      await updateProgress.mutateAsync({
-        section_id: Number(sectionId),
-        lesson_id: currentLesson?.id,
-        points: (progress?.points || 0) + 10,
-        completed: true,
-      });
-      navigate("/progress");
+  const handleQuizComplete = async (passed: boolean) => {
+    if (!lessons || !currentLesson) return;
+
+    if (passed) {
+      if (isLastLesson) {
+        await updateProgress.mutateAsync({
+          section_id: Number(sectionId),
+          lesson_id: currentLesson?.id,
+          points: (progress?.points || 0) + 10,
+          completed: true,
+        });
+        navigate("/progress");
+      } else {
+        setCurrentLessonIndex((prev) => prev + 1);
+        await updateProgress.mutateAsync({
+          section_id: Number(sectionId),
+          lesson_id: currentLesson?.id,
+          points: (progress?.points || 0) + 5,
+        });
+      }
+      setShowQuiz(false);
     } else {
-      setCurrentLessonIndex((prev) => prev + 1);
+      // Decrease lives when failing the quiz
       await updateProgress.mutateAsync({
-        section_id: Number(sectionId),
-        lesson_id: currentLesson?.id,
-        points: (progress?.points || 0) + 5,
+        lives: Math.max(0, (progress?.lives || 5) - 1),
       });
     }
   };
@@ -122,7 +137,12 @@ const Section = () => {
           </div>
 
           <div className="glass p-6 rounded-lg space-y-6">
-            {currentLesson ? (
+            {showQuiz ? (
+              <Quiz
+                lessonId={currentLesson?.id ?? 0}
+                onComplete={handleQuizComplete}
+              />
+            ) : currentLesson ? (
               <>
                 <h1 className="text-2xl font-georgia">{currentLesson.title}</h1>
                 {currentLesson.image_url && (
