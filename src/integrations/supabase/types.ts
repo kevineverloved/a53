@@ -9,6 +9,71 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      achievements: {
+        Row: {
+          created_at: string | null
+          description: string
+          icon: string
+          id: number
+          points_required: number
+          title: string
+        }
+        Insert: {
+          created_at?: string | null
+          description: string
+          icon: string
+          id?: number
+          points_required: number
+          title: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string
+          icon?: string
+          id?: number
+          points_required?: number
+          title?: string
+        }
+        Relationships: []
+      }
+      lessons: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: number
+          image_url: string | null
+          order_number: number
+          section_id: number | null
+          title: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: number
+          image_url?: string | null
+          order_number: number
+          section_id?: number | null
+          title: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: number
+          image_url?: string | null
+          order_number?: number
+          section_id?: number | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lessons_section_id_fkey"
+            columns: ["section_id"]
+            isOneToOne: false
+            referencedRelation: "sections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
@@ -29,6 +94,113 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      sections: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: number
+          order_number: number
+          title: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: number
+          order_number: number
+          title: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: number
+          order_number?: number
+          title?: string
+        }
+        Relationships: []
+      }
+      user_achievements: {
+        Row: {
+          achievement_id: number | null
+          earned_at: string | null
+          id: number
+          user_id: string
+        }
+        Insert: {
+          achievement_id?: number | null
+          earned_at?: string | null
+          id?: number
+          user_id: string
+        }
+        Update: {
+          achievement_id?: number | null
+          earned_at?: string | null
+          id?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_achievements_achievement_id_fkey"
+            columns: ["achievement_id"]
+            isOneToOne: false
+            referencedRelation: "achievements"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_progress: {
+        Row: {
+          completed: boolean | null
+          created_at: string | null
+          id: number
+          last_position: number | null
+          lesson_id: number | null
+          lives: number | null
+          points: number | null
+          section_id: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean | null
+          created_at?: string | null
+          id?: number
+          last_position?: number | null
+          lesson_id?: number | null
+          lives?: number | null
+          points?: number | null
+          section_id?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          completed?: boolean | null
+          created_at?: string | null
+          id?: number
+          last_position?: number | null
+          lesson_id?: number | null
+          lives?: number | null
+          points?: number | null
+          section_id?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_progress_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "lessons"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_progress_section_id_fkey"
+            columns: ["section_id"]
+            isOneToOne: false
+            referencedRelation: "sections"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

@@ -1,15 +1,17 @@
 
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
+import { useUserProgress } from "@/hooks/useUserProgress";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const Progress = () => {
-  const [currentPosition, setCurrentPosition] = useState(1);
+  const navigate = useNavigate();
+  const { progress, sections, isLoading, updateProgress } = useUserProgress();
+
   const totalSquares = 100;
   const squares = Array.from({ length: totalSquares }, (_, i) => i + 1);
-
-  const navigate = useNavigate();
+  const currentPosition = progress?.last_position || 1;
 
   return (
     <div className="min-h-screen flex flex-col bg-black text-white">
@@ -28,28 +30,37 @@ const Progress = () => {
       </header>
 
       <main className="flex-grow container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto glass p-6 rounded-lg">
-          <div className="grid grid-cols-10 gap-1">
-            {squares.map((square) => {
-              const isCurrentPosition = square === currentPosition;
-              const isCompleted = square < currentPosition;
-
-              return (
-                <div
-                  key={square}
-                  className={`
-                    aspect-square rounded-md flex items-center justify-center text-sm
-                    ${isCurrentPosition ? "bg-[#1EAEDB] text-white" : ""}
-                    ${isCompleted ? "bg-[#1EAEDB]/30" : "bg-white/5"}
-                    ${(square <= 10 || isCurrentPosition) ? "" : "opacity-50"}
-                  `}
-                >
-                  {square}
-                </div>
-              );
-            })}
+        {isLoading ? (
+          <div className="max-w-4xl mx-auto space-y-4">
+            <Skeleton className="h-[400px] w-full" />
           </div>
-        </div>
+        ) : (
+          <div className="max-w-4xl mx-auto glass p-6 rounded-lg">
+            <div className="grid grid-cols-10 gap-1">
+              {squares.map((square) => {
+                const isCurrentPosition = square === currentPosition;
+                const isCompleted = square < currentPosition;
+                const section = sections?.[Math.floor((square - 1) / 12.5)];
+
+                return (
+                  <div
+                    key={square}
+                    className={`
+                      aspect-square rounded-md flex items-center justify-center text-sm
+                      transition-all duration-300 cursor-default
+                      ${isCurrentPosition ? "bg-[#1EAEDB] text-white scale-110" : ""}
+                      ${isCompleted ? "bg-[#1EAEDB]/30" : "bg-white/5"}
+                      ${square <= currentPosition + 5 ? "" : "opacity-50"}
+                    `}
+                    title={section?.title}
+                  >
+                    {square}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );
