@@ -4,7 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Heart, ArrowLeft, ArrowRight } from "lucide-react";
+import { Heart, ArrowLeft, ArrowRight, Menu } from "lucide-react";
 import { useUserProgress } from "@/hooks/useUserProgress";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -31,12 +31,12 @@ const Section = () => {
 
   const currentLesson = lessons?.[currentLessonIndex];
   const isLastLesson = currentLessonIndex === (lessons?.length ?? 0) - 1;
+  const lives = progress?.lives || 5;
 
   const handleNext = async () => {
     if (!lessons) return;
 
     if (isLastLesson) {
-      // Update progress before navigating away
       await updateProgress.mutateAsync({
         section_id: Number(sectionId),
         lesson_id: currentLesson?.id,
@@ -94,12 +94,13 @@ const Section = () => {
                 <Heart
                   key={i}
                   className={`w-5 h-5 ${
-                    i < (progress?.lives || 5)
-                      ? "text-red-500 fill-red-500"
-                      : "text-gray-500"
+                    i < lives ? "text-red-500 fill-red-500" : "text-gray-500"
                   }`}
                 />
               ))}
+            </div>
+            <div className="flex items-center gap-2">
+              <Menu className="w-5 h-5 text-white" />
             </div>
           </div>
         </div>
@@ -137,7 +138,7 @@ const Section = () => {
                 <div className="flex justify-end">
                   <Button
                     onClick={handleNext}
-                    className="bg-[#1EAEDB] hover:bg-[#1EAEDB]/90"
+                    className="w-full sm:w-auto bg-[#1EAEDB] hover:bg-[#1EAEDB]/90"
                   >
                     {isLastLesson ? "Complete Section" : "Next Lesson"}
                     <ArrowRight className="ml-2 w-4 h-4" />

@@ -1,14 +1,16 @@
 
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Heart, Trophy, Star, ArrowRight } from "lucide-react";
+import { Heart, Menu, Star, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useUserProgress } from "@/hooks/useUserProgress";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const Learn = () => {
   const navigate = useNavigate();
   const { progress, sections, achievements, isLoading } = useUserProgress();
+  const isMobile = useIsMobile();
 
   const currentProgress = progress ? ((progress.last_position - 1) / 100) * 100 : 0;
   const lives = progress?.lives || 5;
@@ -42,7 +44,7 @@ const Learn = () => {
               ))}
             </div>
             <div className="flex items-center gap-2">
-              <Trophy className="w-5 h-5 text-[#1EAEDB]" />
+              <Menu className="w-5 h-5 text-white" />
               <span>{points} pts</span>
             </div>
           </div>
@@ -77,17 +79,17 @@ const Learn = () => {
               <p className="text-gray-400 mb-6">
                 Start your journey to learn road rules. Complete sections to earn points and achievements.
               </p>
-              <div className="flex justify-between items-center">
+              <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
                 <Button
                   onClick={() => navigate("/progress")}
                   variant="outline"
-                  className="bg-white/5 border-white/10 hover:bg-white/10"
+                  className="w-full sm:w-auto bg-white/5 border-white/10 hover:bg-white/10"
                 >
                   View Progress Map
                 </Button>
                 <Button
                   onClick={() => navigate(`/learn/section/${sections?.[0]?.id}`)}
-                  className="bg-[#1EAEDB] hover:bg-[#1EAEDB]/90"
+                  className="w-full sm:w-auto bg-[#1EAEDB] hover:bg-[#1EAEDB]/90"
                 >
                   Start Learning <ArrowRight className="ml-2 w-4 h-4" />
                 </Button>
