@@ -1,20 +1,19 @@
-```typescript
+
 import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useUserProgress } from "@/hooks/useUserProgress";
 import { supabase } from "@/integrations/supabase/client";
-import { Skeleton } from "@/components/ui/skeleton";
 import Quiz from "@/components/Quiz";
+import SectionHeader from "@/components/section/SectionHeader";
+import ProgressBar from "@/components/section/ProgressBar";
+import LessonContent from "@/components/section/LessonContent";
+import LoadingSkeleton from "@/components/section/LoadingSkeleton";
 
 const LESSONS_PER_QUIZ = 3;
 
-const Section = () => {
+export const Section = () => {
   const { sectionId } = useParams();
-  const navigate = useNavigate();
   const [currentLessonIndex, setCurrentLessonIndex] = useState(0);
   const [showQuiz, setShowQuiz] = useState(false);
   const { progress, updateProgress } = useUserProgress();
@@ -74,7 +73,6 @@ const Section = () => {
     if (!lessons || !currentLesson) return;
 
     if (passed) {
-      // Award points for completing the lesson group
       await updateProgress.mutateAsync({
         section_id: Number(sectionId),
         lesson_id: currentLesson?.id,
@@ -86,13 +84,11 @@ const Section = () => {
           section_id: Number(sectionId),
           completed: true,
         });
-        navigate("/progress");
       } else {
         setCurrentLessonIndex((prev) => prev + 1);
       }
       setShowQuiz(false);
     } else {
-      // Decrease lives when failing the quiz
       await updateProgress.mutateAsync({
         lives: Math.max(0, (progress?.lives || 5) - 1),
       });
@@ -100,61 +96,22 @@ const Section = () => {
   };
 
   if (lessonsLoading || sectionLoading) {
-    return (
-      <div className="min-h-screen flex flex-col bg-black text-white">
-        <header className="sticky top-0 z-50 w-full backdrop-blur-md bg-black/75 border-b border-white/10">
-          <div className="container mx-auto flex h-14 items-center px-4">
-            <Skeleton className="h-14 w-full" />
-          </div>
-        </header>
-        <main className="flex-grow container mx-auto px-4 py-8">
-          <div className="max-w-4xl mx-auto space-y-4">
-            <Skeleton className="h-[400px] w-full" />
-          </div>
-        </main>
-      </div>
-    );
+    return <LoadingSkeleton />;
   }
 
   return (
     <div className="min-h-screen flex flex-col bg-black text-white">
-      <header className="sticky top-0 z-50 w-full backdrop-blur-md bg-black/75 border-b border-white/10">
-        <div className="container mx-auto flex h-14 items-center justify-between px-4">
-          <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => navigate("/learn")}
-              className="mr-2"
-            >
-              <ArrowLeft className="w-5 h-5" />
-            </Button>
-            <div className="flex flex-col">
-              <span className="font-georgia text-2xl font-bold">
-                Lesson {currentLessonIndex + 1}
-              </span>
-              <span className="text-sm text-gray-400">
-                Subject: {section?.subject}
-              </span>
-            </div>
-          </div>
-        </div>
-      </header>
+      <SectionHeader 
+        currentLessonIndex={currentLessonIndex}
+        subject={section?.subject}
+      />
 
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto space-y-8">
-          <div className="space-y-2">
-            <div className="flex justify-between text-sm">
-              <span>Section Progress</span>
-              <span>
-                {currentLessonIndex + 1} / {lessons?.length}
-              </span>
-            </div>
-            <Progress
-              value={((currentLessonIndex + 1) / (lessons?.length || 1)) * 100}
-              className="bg-white/10"
-            />
-          </div>
+          <ProgressBar 
+            currentIndex={currentLessonIndex}
+            total={lessons?.length || 0}
+          />
 
           <div className="glass p-6 rounded-lg space-y-6">
             {showQuiz ? (
@@ -166,28 +123,11 @@ const Section = () => {
                 sectionId={Number(sectionId)}
               />
             ) : currentLesson ? (
-              <>
-                <h1 className="text-2xl font-georgia">{currentLesson.title}</h1>
-                {currentLesson.image_url && (
-                  <img
-                    src={currentLesson.image_url}
-                    alt={currentLesson.title}
-                    className="w-full rounded-lg"
-                  />
-                )}
-                <p className="text-gray-300 leading-relaxed whitespace-pre-line">
-                  {currentLesson.content}
-                </p>
-                <div className="flex justify-end">
-                  <Button
-                    onClick={handleNext}
-                    className="w-full sm:w-auto bg-[#1EAEDB] hover:bg-[#1EAEDB]/90"
-                  >
-                    {shouldShowQuiz ? "Take Quiz" : "Next Lesson"}
-                    <ArrowRight className="ml-2 w-4 h-4" />
-                  </Button>
-                </div>
-              </>
+              <LessonContent
+                lesson={currentLesson}
+                shouldShowQuiz={shouldShowQuiz}
+                onNext={handleNext}
+              />
             ) : (
               <p>No lessons found for this section.</p>
             )}
@@ -199,4 +139,3 @@ const Section = () => {
 };
 
 export default Section;
-```
