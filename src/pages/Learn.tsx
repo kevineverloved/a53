@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Heart, Menu, Car, Road, SignpostBig, Shield } from "lucide-react";
+import { Heart, Menu, Car, Map, SignpostBig, Shield } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useUserProgress } from "@/hooks/useUserProgress";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -17,7 +17,7 @@ const Learn = () => {
   const points = progress?.points || 0;
 
   const subjects = [
-    { title: "Road Rules", icon: Road, color: "#1EAEDB" },
+    { title: "Road Rules", icon: Map, color: "#1EAEDB" },
     { title: "Car Rules", icon: Car, color: "#1EAEDB" },
     { title: "Traffic Sign Rules", icon: SignpostBig, color: "#1EAEDB" },
     { title: "Safety Rules", icon: Shield, color: "#1EAEDB" }
@@ -102,7 +102,7 @@ const Learn = () => {
                   onClick={() => navigate(`/learn/section/${sections?.[0]?.id}`)}
                   className="w-full sm:w-auto bg-[#1EAEDB] hover:bg-[#1EAEDB]/90"
                 >
-                  Start Learning <Road className="ml-2 w-4 h-4" />
+                  Start Learning <Map className="ml-2 w-4 h-4" />
                 </Button>
               </div>
             </div>
