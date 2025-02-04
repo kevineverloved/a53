@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Heart, Menu, Star, ArrowRight } from "lucide-react";
+import { Heart, Menu, Car, Road, SignpostBig, Shield } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useUserProgress } from "@/hooks/useUserProgress";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -15,6 +15,13 @@ const Learn = () => {
   const currentProgress = progress ? ((progress.last_position - 1) / 100) * 100 : 0;
   const lives = progress?.lives || 5;
   const points = progress?.points || 0;
+
+  const subjects = [
+    { title: "Road Rules", icon: Road, color: "#1EAEDB" },
+    { title: "Car Rules", icon: Car, color: "#1EAEDB" },
+    { title: "Traffic Sign Rules", icon: SignpostBig, color: "#1EAEDB" },
+    { title: "Safety Rules", icon: Shield, color: "#1EAEDB" }
+  ];
 
   if (isLoading) {
     return (
@@ -31,7 +38,7 @@ const Learn = () => {
     <div className="min-h-screen flex flex-col bg-black text-white">
       <header className="sticky top-0 z-50 w-full backdrop-blur-md bg-black/75 border-b border-white/10">
         <div className="container mx-auto flex h-14 items-center justify-between px-4">
-          <span className="font-georgia text-2xl font-bold">K53</span>
+          <span className="font-georgia text-2xl font-bold">A53</span>
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-1">
               {[...Array(5)].map((_, i) => (
@@ -62,15 +69,19 @@ const Learn = () => {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {achievements?.map((achievement, i) => (
-              <div
-                key={i}
-                className="glass p-4 rounded-lg flex flex-col items-center justify-center gap-2"
-              >
-                <Star className={`w-8 h-8 ${points >= achievement.points_required ? "text-[#1EAEDB]" : "text-gray-500"}`} />
-                <span className="text-sm text-center">{achievement.title}</span>
-              </div>
-            ))}
+            {subjects.map((subject, i) => {
+              const Icon = subject.icon;
+              return (
+                <div
+                  key={i}
+                  className="glass p-4 rounded-lg flex flex-col items-center justify-center gap-2 transition-transform hover:scale-105 cursor-pointer"
+                  onClick={() => navigate(`/learn/section/${i + 1}`)}
+                >
+                  <Icon className="w-8 h-8 text-[#1EAEDB]" />
+                  <span className="text-sm text-center">{subject.title}</span>
+                </div>
+              );
+            })}
           </div>
 
           <div className="space-y-4">
@@ -91,7 +102,7 @@ const Learn = () => {
                   onClick={() => navigate(`/learn/section/${sections?.[0]?.id}`)}
                   className="w-full sm:w-auto bg-[#1EAEDB] hover:bg-[#1EAEDB]/90"
                 >
-                  Start Learning <ArrowRight className="ml-2 w-4 h-4" />
+                  Start Learning <Road className="ml-2 w-4 h-4" />
                 </Button>
               </div>
             </div>
