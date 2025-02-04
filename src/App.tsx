@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Learn from "./pages/Learn";
 import Progress from "./pages/Progress";
+import Section from "./pages/Section";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -21,6 +22,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/learn" element={<Learn />} />
           <Route path="/progress" element={<Progress />} />
+          <Route path="/learn/section/:sectionId" element={<Section />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
