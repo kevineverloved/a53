@@ -3,6 +3,10 @@ import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Separator } from "@/components/ui/separator";
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 
 const Index = () => {
@@ -42,79 +46,148 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-center p-4 bg-gradient-to-b from-black to-gray-900">
-      <div className="w-full max-w-sm space-y-8">
-        <div className="text-center space-y-2">
-          <h1 className="text-4xl font-georgia text-white">A53</h1>
-          <p className="text-gray-400 font-roboto">Welcome back</p>
+    <div className="min-h-screen flex flex-col bg-black text-white">
+      <header className="sticky top-0 z-50 w-full backdrop-blur-md bg-black/75 border-b border-white/10">
+        <div className="container mx-auto flex h-14 items-center justify-between px-4">
+          <span className="font-georgia text-2xl font-bold">A53</span>
         </div>
+      </header>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-4">
-            <div className="relative">
-              <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-              <Input
-                type="email"
-                placeholder="Email address"
-                className="pl-10 h-12 bg-white/5 border-white/10 text-white placeholder:text-gray-400"
-                value={formData.email}
-                onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
-                }
-              />
-            </div>
+      <main className="flex-grow container mx-auto px-4 py-8 mb-16 md:mb-0">
+        <Card className="max-w-md mx-auto glass">
+          <CardHeader>
+            <CardTitle className="font-georgia text-xl">Welcome to A53</CardTitle>
+            <CardDescription className="text-gray-400">Sign in or create an account to get started</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Tabs defaultValue="login" className="w-full">
+              <TabsList className="grid w-full grid-cols-2 bg-white/5">
+                <TabsTrigger value="login">Login</TabsTrigger>
+                <TabsTrigger value="register">Register</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="login">
+                <form onSubmit={handleSubmit}>
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="email">Email</Label>
+                      <div className="relative">
+                        <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                        <Input
+                          id="email"
+                          type="email"
+                          placeholder="Enter your email"
+                          className="pl-10 h-12 bg-white/5 border-white/10"
+                          value={formData.email}
+                          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="password">Password</Label>
+                      <div className="relative">
+                        <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                        <Input
+                          id="password"
+                          type={showPassword ? "text" : "password"}
+                          placeholder="Enter your password"
+                          className="pl-10 pr-10 h-12 bg-white/5 border-white/10"
+                          value={formData.password}
+                          onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                        >
+                          {showPassword ? (
+                            <EyeOff className="h-5 w-5" />
+                          ) : (
+                            <Eye className="h-5 w-5" />
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                    <Button
+                      type="submit"
+                      className="w-full h-12 bg-[#1EAEDB] hover:bg-[#1EAEDB]/90"
+                      disabled={isLoading}
+                    >
+                      {isLoading ? "Signing in..." : "Sign In"}
+                    </Button>
+                  </div>
+                </form>
+              </TabsContent>
 
-            <div className="relative">
-              <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-              <Input
-                type={showPassword ? "text" : "password"}
-                placeholder="Password"
-                className="pl-10 h-12 bg-white/5 border-white/10 text-white placeholder:text-gray-400"
-                value={formData.password}
-                onChange={(e) =>
-                  setFormData({ ...formData, password: e.target.value })
-                }
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-3 text-gray-400 hover:text-white transition-colors"
-              >
-                {showPassword ? (
-                  <EyeOff className="h-5 w-5" />
-                ) : (
-                  <Eye className="h-5 w-5" />
-                )}
-              </button>
-            </div>
-          </div>
+              <TabsContent value="register">
+                <form>
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="register-email">Email</Label>
+                      <div className="relative">
+                        <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                        <Input
+                          id="register-email"
+                          type="email"
+                          placeholder="Enter your email"
+                          className="pl-10 h-12 bg-white/5 border-white/10"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="register-password">Password</Label>
+                      <div className="relative">
+                        <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                        <Input
+                          id="register-password"
+                          type={showPassword ? "text" : "password"}
+                          placeholder="Create a password"
+                          className="pl-10 pr-10 h-12 bg-white/5 border-white/10"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                        >
+                          {showPassword ? (
+                            <EyeOff className="h-5 w-5" />
+                          ) : (
+                            <Eye className="h-5 w-5" />
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                    <Button type="submit" className="w-full h-12 bg-[#1EAEDB] hover:bg-[#1EAEDB]/90">
+                      Create Account
+                    </Button>
+                  </div>
+                </form>
+              </TabsContent>
+            </Tabs>
 
-          <div className="space-y-4">
-            <Button
-              type="submit"
-              className="w-full h-12 bg-primary hover:bg-primary/90 text-white font-medium transition-all duration-200 ease-in-out"
-              disabled={isLoading}
-            >
-              {isLoading ? "Signing in..." : "Sign in"}
-            </Button>
-
-            <div className="flex items-center justify-between text-sm">
-              <a
-                href="#"
-                className="text-primary hover:text-primary/80 transition-colors"
-              >
-                Forgot password?
+            <div className="mt-4 text-center">
+              <a href="#" className="text-sm text-[#1EAEDB] hover:text-[#1EAEDB]/80">
+                Forgot your password?
               </a>
-              <a
-                href="#"
-                className="text-primary hover:text-primary/80 transition-colors"
-              >
-                Create account
-              </a>
             </div>
-          </div>
-        </form>
-      </div>
+
+            <Separator className="my-4 bg-white/10" />
+
+            <div className="space-y-4">
+              <Button variant="outline" className="w-full border-white/10 bg-white/5 hover:bg-white/10">
+                Continue with Google
+              </Button>
+              <Button variant="outline" className="w-full border-white/10 bg-white/5 hover:bg-white/10">
+                Continue with Apple
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </main>
+
+      <footer className="bg-black border-t border-white/10 py-4 text-center text-sm text-gray-400">
+        © 2024 A53. All rights reserved.
+      </footer>
     </div>
   );
 };
