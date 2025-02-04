@@ -4,11 +4,13 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Heart, ArrowLeft, ArrowRight, Menu } from "lucide-react";
+import { ArrowLeft, ArrowRight, Menu } from "lucide-react";
 import { useUserProgress } from "@/hooks/useUserProgress";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
 import Quiz from "@/components/Quiz";
+
+const LESSONS_PER_QUIZ = 3;
 
 const Section = () => {
   const { sectionId } = useParams();
@@ -33,32 +35,37 @@ const Section = () => {
 
   const currentLesson = lessons?.[currentLessonIndex];
   const isLastLesson = currentLessonIndex === (lessons?.length ?? 0) - 1;
-  const lives = progress?.lives || 5;
+  const shouldShowQuiz = (currentLessonIndex + 1) % LESSONS_PER_QUIZ === 0 || isLastLesson;
 
   const handleNext = () => {
     if (!lessons) return;
-    setShowQuiz(true);
+    
+    if (shouldShowQuiz) {
+      setShowQuiz(true);
+    } else {
+      setCurrentLessonIndex((prev) => prev + 1);
+    }
   };
 
   const handleQuizComplete = async (passed: boolean) => {
     if (!lessons || !currentLesson) return;
 
     if (passed) {
+      // Award points for completing the lesson group
+      await updateProgress.mutateAsync({
+        section_id: Number(sectionId),
+        lesson_id: currentLesson?.id,
+        points: (progress?.points || 0) + 15, // Increased points for completing a group
+      });
+
       if (isLastLesson) {
         await updateProgress.mutateAsync({
           section_id: Number(sectionId),
-          lesson_id: currentLesson?.id,
-          points: (progress?.points || 0) + 10,
           completed: true,
         });
         navigate("/progress");
       } else {
         setCurrentLessonIndex((prev) => prev + 1);
-        await updateProgress.mutateAsync({
-          section_id: Number(sectionId),
-          lesson_id: currentLesson?.id,
-          points: (progress?.points || 0) + 5,
-        });
       }
       setShowQuiz(false);
     } else {
@@ -104,16 +111,6 @@ const Section = () => {
             </span>
           </div>
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-1">
-              {[...Array(5)].map((_, i) => (
-                <Heart
-                  key={i}
-                  className={`w-5 h-5 ${
-                    i < lives ? "text-red-500 fill-red-500" : "text-gray-500"
-                  }`}
-                />
-              ))}
-            </div>
             <div className="flex items-center gap-2">
               <Menu className="w-5 h-5 text-white" />
             </div>
@@ -141,6 +138,8 @@ const Section = () => {
               <Quiz
                 lessonId={currentLesson?.id ?? 0}
                 onComplete={handleQuizComplete}
+                showLives={true}
+                lives={progress?.lives}
               />
             ) : currentLesson ? (
               <>
@@ -160,7 +159,7 @@ const Section = () => {
                     onClick={handleNext}
                     className="w-full sm:w-auto bg-[#1EAEDB] hover:bg-[#1EAEDB]/90"
                   >
-                    {isLastLesson ? "Complete Section" : "Next Lesson"}
+                    {shouldShowQuiz ? "Take Quiz" : "Next Lesson"}
                     <ArrowRight className="ml-2 w-4 h-4" />
                   </Button>
                 </div>

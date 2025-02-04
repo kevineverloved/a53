@@ -5,13 +5,16 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
+import { Heart } from "lucide-react";
 
 interface QuizProps {
   lessonId: number;
   onComplete: (passed: boolean) => void;
+  showLives?: boolean;
+  lives?: number;
 }
 
-const Quiz = ({ lessonId, onComplete }: QuizProps) => {
+const Quiz = ({ lessonId, onComplete, showLives = false, lives = 5 }: QuizProps) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const { toast } = useToast();
@@ -72,6 +75,19 @@ const Quiz = ({ lessonId, onComplete }: QuizProps) => {
 
   return (
     <div className="space-y-6">
+      {showLives && (
+        <div className="flex items-center gap-1 justify-end">
+          {[...Array(5)].map((_, i) => (
+            <Heart
+              key={i}
+              className={`w-5 h-5 ${
+                i < (lives || 0) ? "text-red-500 fill-red-500" : "text-gray-500"
+              }`}
+            />
+          ))}
+        </div>
+      )}
+      
       <div className="text-sm text-gray-400">
         Question {currentQuestionIndex + 1} of {questions.length}
       </div>
