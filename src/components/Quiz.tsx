@@ -6,6 +6,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { Heart } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface QuizProps {
   lessonIds: number[];
@@ -18,6 +26,7 @@ interface QuizProps {
 const Quiz = ({ lessonIds, onComplete, showLives = false, lives = 5, sectionId }: QuizProps) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
+  const [showIncorrectDialog, setShowIncorrectDialog] = useState(false);
   const { toast } = useToast();
   
   // Fetch quiz progress
@@ -113,16 +122,15 @@ const Quiz = ({ lessonIds, onComplete, showLives = false, lives = 5, sectionId }
         setSelectedAnswer(null);
       }
     } else {
-      // Reset progress and reduce lives
-      setCurrentQuestionIndex(0);
-      setSelectedAnswer(null);
-      toast({
-        title: "Incorrect",
-        description: "Try again! You lost a life.",
-        variant: "destructive",
-      });
+      setShowIncorrectDialog(true);
       onComplete(false);
     }
+  };
+
+  const handleDialogClose = () => {
+    setShowIncorrectDialog(false);
+    setCurrentQuestionIndex(0);
+    setSelectedAnswer(null);
   };
 
   if (isLoading || progressLoading) {
@@ -134,47 +142,65 @@ const Quiz = ({ lessonIds, onComplete, showLives = false, lives = 5, sectionId }
   }
 
   return (
-    <div className="space-y-6">
-      {showLives && (
-        <div className="flex items-center gap-1 justify-end">
-          {[...Array(5)].map((_, i) => (
-            <Heart
-              key={i}
-              className={`w-5 h-5 ${
-                i < (lives || 0) ? "text-red-500 fill-red-500" : "text-gray-500"
-              }`}
-            />
+    <>
+      <Dialog open={showIncorrectDialog} onOpenChange={handleDialogClose}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Incorrect Answer</DialogTitle>
+            <DialogDescription>
+              Don't worry! Learning takes time. Let's start from the beginning and try again.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button onClick={handleDialogClose} className="w-full">
+              Okay, Let's Try Again
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <div className="space-y-6">
+        {showLives && (
+          <div className="flex items-center gap-1 justify-end">
+            {[...Array(5)].map((_, i) => (
+              <Heart
+                key={i}
+                className={`w-5 h-5 ${
+                  i < (lives || 0) ? "text-red-500 fill-red-500" : "text-gray-500"
+                }`}
+              />
+            ))}
+          </div>
+        )}
+        
+        <div className="text-sm text-gray-400">
+          Question {currentQuestionIndex + 1} of {questions.length}
+        </div>
+        
+        <h2 className="text-xl font-georgia">{currentQuestion?.question}</h2>
+        
+        <div className="space-y-3">
+          {currentQuestion?.options.map((option, index) => (
+            <Button
+              key={index}
+              variant={selectedAnswer === option ? "default" : "outline"}
+              className="w-full justify-start text-left px-4 py-3 min-h-[48px] whitespace-normal break-words"
+              onClick={() => handleAnswerSelect(option)}
+            >
+              {option}
+            </Button>
           ))}
         </div>
-      )}
-      
-      <div className="text-sm text-gray-400">
-        Question {currentQuestionIndex + 1} of {questions.length}
-      </div>
-      
-      <h2 className="text-xl font-georgia">{currentQuestion?.question}</h2>
-      
-      <div className="space-y-3">
-        {currentQuestion?.options.map((option, index) => (
-          <Button
-            key={index}
-            variant={selectedAnswer === option ? "default" : "outline"}
-            className="w-full justify-start text-left px-4 py-3 min-h-[48px] whitespace-normal break-words"
-            onClick={() => handleAnswerSelect(option)}
-          >
-            {option}
-          </Button>
-        ))}
-      </div>
 
-      <Button
-        onClick={handleSubmit}
-        disabled={!selectedAnswer}
-        className="w-full bg-[#1EAEDB] hover:bg-[#1EAEDB]/90"
-      >
-        Submit Answer
-      </Button>
-    </div>
+        <Button
+          onClick={handleSubmit}
+          disabled={!selectedAnswer}
+          className="w-full bg-[#1EAEDB] hover:bg-[#1EAEDB]/90"
+        >
+          Submit Answer
+        </Button>
+      </div>
+    </>
   );
 };
 

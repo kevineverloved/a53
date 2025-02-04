@@ -1,10 +1,10 @@
-
+```typescript
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, ArrowRight, Menu } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useUserProgress } from "@/hooks/useUserProgress";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -138,11 +138,6 @@ const Section = () => {
               </span>
             </div>
           </div>
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <Menu className="w-5 h-5 text-white" />
-            </div>
-          </div>
         </div>
       </header>
 
@@ -204,3 +199,4 @@ const Section = () => {
 };
 
 export default Section;
+```
