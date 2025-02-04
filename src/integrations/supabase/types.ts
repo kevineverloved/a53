@@ -95,6 +95,44 @@ export type Database = {
         }
         Relationships: []
       }
+      quiz_progress: {
+        Row: {
+          completed_questions: number[] | null
+          created_at: string | null
+          id: number
+          last_question_index: number | null
+          section_id: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          completed_questions?: number[] | null
+          created_at?: string | null
+          id?: number
+          last_question_index?: number | null
+          section_id?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          completed_questions?: number[] | null
+          created_at?: string | null
+          id?: number
+          last_question_index?: number | null
+          section_id?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_progress_section_id_fkey"
+            columns: ["section_id"]
+            isOneToOne: false
+            referencedRelation: "sections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       quiz_questions: {
         Row: {
           correct_answer: string
@@ -136,6 +174,7 @@ export type Database = {
           description: string | null
           id: number
           order_number: number
+          subject: string | null
           title: string
         }
         Insert: {
@@ -143,6 +182,7 @@ export type Database = {
           description?: string | null
           id?: number
           order_number: number
+          subject?: string | null
           title: string
         }
         Update: {
@@ -150,6 +190,7 @@ export type Database = {
           description?: string | null
           id?: number
           order_number?: number
+          subject?: string | null
           title?: string
         }
         Relationships: []

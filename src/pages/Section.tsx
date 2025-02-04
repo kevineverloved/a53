@@ -19,6 +19,20 @@ const Section = () => {
   const [showQuiz, setShowQuiz] = useState(false);
   const { progress, updateProgress } = useUserProgress();
 
+  const { data: section, isLoading: sectionLoading } = useQuery({
+    queryKey: ["section", sectionId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("sections")
+        .select("*")
+        .eq("id", Number(sectionId))
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+  });
+
   const { data: lessons, isLoading: lessonsLoading } = useQuery({
     queryKey: ["lessons", sectionId],
     queryFn: async () => {
@@ -64,7 +78,7 @@ const Section = () => {
       await updateProgress.mutateAsync({
         section_id: Number(sectionId),
         lesson_id: currentLesson?.id,
-        points: (progress?.points || 0) + 15, // Points for completing a group
+        points: (progress?.points || 0) + 15,
       });
 
       if (isLastLesson) {
@@ -85,7 +99,7 @@ const Section = () => {
     }
   };
 
-  if (lessonsLoading) {
+  if (lessonsLoading || sectionLoading) {
     return (
       <div className="min-h-screen flex flex-col bg-black text-white">
         <header className="sticky top-0 z-50 w-full backdrop-blur-md bg-black/75 border-b border-white/10">
@@ -115,9 +129,14 @@ const Section = () => {
             >
               <ArrowLeft className="w-5 h-5" />
             </Button>
-            <span className="font-georgia text-2xl font-bold">
-              Lesson {currentLessonIndex + 1}
-            </span>
+            <div className="flex flex-col">
+              <span className="font-georgia text-2xl font-bold">
+                Lesson {currentLessonIndex + 1}
+              </span>
+              <span className="text-sm text-gray-400">
+                Subject: {section?.subject}
+              </span>
+            </div>
           </div>
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
@@ -149,6 +168,7 @@ const Section = () => {
                 onComplete={handleQuizComplete}
                 showLives={true}
                 lives={progress?.lives}
+                sectionId={Number(sectionId)}
               />
             ) : currentLesson ? (
               <>

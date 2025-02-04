@@ -1,7 +1,7 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
@@ -12,12 +12,56 @@ interface QuizProps {
   onComplete: (passed: boolean) => void;
   showLives?: boolean;
   lives?: number;
+  sectionId: number;
 }
 
-const Quiz = ({ lessonIds, onComplete, showLives = false, lives = 5 }: QuizProps) => {
+const Quiz = ({ lessonIds, onComplete, showLives = false, lives = 5, sectionId }: QuizProps) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const { toast } = useToast();
+  
+  // Fetch quiz progress
+  const { data: quizProgress, isLoading: progressLoading } = useQuery({
+    queryKey: ["quiz-progress", sectionId],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return null;
+
+      const { data, error } = await supabase
+        .from("quiz_progress")
+        .select("*")
+        .eq("user_id", user.id)
+        .eq("section_id", sectionId)
+        .single();
+
+      if (error && error.code !== "PGRST116") throw error;
+      return data;
+    },
+  });
+
+  // Update quiz progress mutation
+  const updateProgress = useMutation({
+    mutationFn: async (updates: {
+      last_question_index: number;
+      completed_questions: number[];
+    }) => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("No user found");
+
+      const { data, error } = await supabase
+        .from("quiz_progress")
+        .upsert({
+          user_id: user.id,
+          section_id: sectionId,
+          ...updates,
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+  });
 
   const { data: questions, isLoading } = useQuery({
     queryKey: ["quiz-questions", lessonIds],
@@ -33,13 +77,19 @@ const Quiz = ({ lessonIds, onComplete, showLives = false, lives = 5 }: QuizProps
     },
   });
 
+  useEffect(() => {
+    if (quizProgress && !progressLoading) {
+      setCurrentQuestionIndex(quizProgress.last_question_index);
+    }
+  }, [quizProgress, progressLoading]);
+
   const currentQuestion = questions?.[currentQuestionIndex];
 
   const handleAnswerSelect = (answer: string) => {
     setSelectedAnswer(answer);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!selectedAnswer || !currentQuestion) return;
 
     const isCorrect = selectedAnswer === currentQuestion.correct_answer;
@@ -48,6 +98,17 @@ const Quiz = ({ lessonIds, onComplete, showLives = false, lives = 5 }: QuizProps
       toast({
         title: "Correct!",
         description: "Great job! Let's move on.",
+      });
+
+      // Save progress
+      const completedQuestions = [
+        ...(quizProgress?.completed_questions || []),
+        currentQuestion.id,
+      ];
+
+      await updateProgress.mutateAsync({
+        last_question_index: currentQuestionIndex + 1,
+        completed_questions: completedQuestions,
       });
 
       if (currentQuestionIndex === (questions?.length ?? 0) - 1) {
@@ -59,14 +120,14 @@ const Quiz = ({ lessonIds, onComplete, showLives = false, lives = 5 }: QuizProps
     } else {
       toast({
         title: "Incorrect",
-        description: "Try again!",
+        description: "Try again! You lost a life.",
         variant: "destructive",
       });
       onComplete(false);
     }
   };
 
-  if (isLoading) {
+  if (isLoading || progressLoading) {
     return <Skeleton className="h-[200px] w-full" />;
   }
 
