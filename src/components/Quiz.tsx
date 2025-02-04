@@ -1,4 +1,4 @@
-```typescript
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useQuery, useMutation } from "@tanstack/react-query";
@@ -176,4 +176,3 @@ const Quiz = ({ lessonIds, onComplete, showLives = false, lives = 5, sectionId }
 };
 
 export default Quiz;
-```
