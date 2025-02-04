@@ -113,6 +113,9 @@ const Quiz = ({ lessonIds, onComplete, showLives = false, lives = 5, sectionId }
         setSelectedAnswer(null);
       }
     } else {
+      // Reset progress and reduce lives
+      setCurrentQuestionIndex(0);
+      setSelectedAnswer(null);
       toast({
         title: "Incorrect",
         description: "Try again! You lost a life.",
