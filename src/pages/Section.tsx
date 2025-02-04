@@ -35,7 +35,16 @@ const Section = () => {
 
   const currentLesson = lessons?.[currentLessonIndex];
   const isLastLesson = currentLessonIndex === (lessons?.length ?? 0) - 1;
-  const shouldShowQuiz = (currentLessonIndex + 1) % LESSONS_PER_QUIZ === 0 || isLastLesson;
+  const shouldShowQuiz = 
+    (currentLessonIndex + 1) % LESSONS_PER_QUIZ === 0 || 
+    isLastLesson;
+
+  const getQuizLessonIds = () => {
+    if (!lessons) return [];
+    const startIndex = Math.floor(currentLessonIndex / LESSONS_PER_QUIZ) * LESSONS_PER_QUIZ;
+    const endIndex = Math.min(startIndex + LESSONS_PER_QUIZ, currentLessonIndex + 1);
+    return lessons.slice(startIndex, endIndex).map(lesson => lesson.id);
+  };
 
   const handleNext = () => {
     if (!lessons) return;
@@ -55,7 +64,7 @@ const Section = () => {
       await updateProgress.mutateAsync({
         section_id: Number(sectionId),
         lesson_id: currentLesson?.id,
-        points: (progress?.points || 0) + 15, // Increased points for completing a group
+        points: (progress?.points || 0) + 15, // Points for completing a group
       });
 
       if (isLastLesson) {
@@ -136,7 +145,7 @@ const Section = () => {
           <div className="glass p-6 rounded-lg space-y-6">
             {showQuiz ? (
               <Quiz
-                lessonId={currentLesson?.id ?? 0}
+                lessonIds={getQuizLessonIds()}
                 onComplete={handleQuizComplete}
                 showLives={true}
                 lives={progress?.lives}
@@ -151,7 +160,7 @@ const Section = () => {
                     className="w-full rounded-lg"
                   />
                 )}
-                <p className="text-gray-300 leading-relaxed">
+                <p className="text-gray-300 leading-relaxed whitespace-pre-line">
                   {currentLesson.content}
                 </p>
                 <div className="flex justify-end">

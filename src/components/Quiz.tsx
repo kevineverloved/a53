@@ -8,24 +8,25 @@ import { useToast } from "@/hooks/use-toast";
 import { Heart } from "lucide-react";
 
 interface QuizProps {
-  lessonId: number;
+  lessonIds: number[];
   onComplete: (passed: boolean) => void;
   showLives?: boolean;
   lives?: number;
 }
 
-const Quiz = ({ lessonId, onComplete, showLives = false, lives = 5 }: QuizProps) => {
+const Quiz = ({ lessonIds, onComplete, showLives = false, lives = 5 }: QuizProps) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const { toast } = useToast();
 
   const { data: questions, isLoading } = useQuery({
-    queryKey: ["quiz-questions", lessonId],
+    queryKey: ["quiz-questions", lessonIds],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("quiz_questions")
         .select("*")
-        .eq("lesson_id", lessonId);
+        .in("lesson_id", lessonIds)
+        .order("lesson_id");
 
       if (error) throw error;
       return data;
@@ -70,7 +71,7 @@ const Quiz = ({ lessonId, onComplete, showLives = false, lives = 5 }: QuizProps)
   }
 
   if (!questions || questions.length === 0) {
-    return <div>No questions available for this lesson.</div>;
+    return <div>No questions available for these lessons.</div>;
   }
 
   return (
