@@ -1,6 +1,7 @@
-
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface LessonContentProps {
   lesson: {
@@ -13,20 +14,43 @@ interface LessonContentProps {
 }
 
 const LessonContent = ({ lesson, shouldShowQuiz, onNext }: LessonContentProps) => {
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    const loadImage = async () => {
+      if (lesson.image_url) {
+        try {
+          const { data: { publicUrl } } = supabase
+            .storage
+            .from('traffic_signs')
+            .getPublicUrl(lesson.image_url.split('/').pop() || '');
+          
+          setImageUrl(publicUrl);
+        } catch (error) {
+          console.error('Error loading image:', error);
+        }
+      }
+    };
+
+    loadImage();
+  }, [lesson.image_url]);
+
   return (
     <>
       <h1 className="text-2xl font-georgia">{lesson.title}</h1>
-      {lesson.image_url && (
-        <img
-          src={lesson.image_url}
-          alt={lesson.title}
-          className="w-full rounded-lg"
-        />
+      {imageUrl && (
+        <div className="my-4">
+          <img
+            src={imageUrl}
+            alt={lesson.title}
+            className="w-full h-auto max-h-[400px] object-contain rounded-lg"
+          />
+        </div>
       )}
       <p className="text-gray-300 leading-relaxed whitespace-pre-line">
         {lesson.content}
       </p>
-      <div className="flex justify-end">
+      <div className="flex justify-end mt-6">
         <Button
           onClick={onNext}
           className="w-full sm:w-auto bg-[#1EAEDB] hover:bg-[#1EAEDB]/90"
