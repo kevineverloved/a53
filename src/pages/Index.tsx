@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -18,21 +19,48 @@ const Index = () => {
   });
   const { toast } = useToast();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      
-      if (!formData.email || !formData.password) {
-        throw new Error("Please fill in all fields");
-      }
+      const { error } = await supabase.auth.signInWithPassword({
+        email: formData.email,
+        password: formData.password,
+      });
+
+      if (error) throw error;
       
       toast({
         title: "Success!",
         description: "You have successfully logged in.",
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error instanceof Error ? error.message : "An error occurred",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      const { error } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Success!",
+        description: "Please check your email to confirm your account.",
       });
     } catch (error) {
       toast({
@@ -67,7 +95,7 @@ const Index = () => {
               </TabsList>
               
               <TabsContent value="login">
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSignIn}>
                   <div className="space-y-4">
                     <div className="space-y-2">
                       <Label htmlFor="email">Email</Label>
@@ -120,7 +148,7 @@ const Index = () => {
               </TabsContent>
 
               <TabsContent value="register">
-                <form>
+                <form onSubmit={handleSignUp}>
                   <div className="space-y-4">
                     <div className="space-y-2">
                       <Label htmlFor="register-email">Email</Label>
@@ -131,6 +159,8 @@ const Index = () => {
                           type="email"
                           placeholder="Enter your email"
                           className="pl-10 h-12 bg-white/5 border-white/10"
+                          value={formData.email}
+                          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         />
                       </div>
                     </div>
@@ -143,6 +173,8 @@ const Index = () => {
                           type={showPassword ? "text" : "password"}
                           placeholder="Create a password"
                           className="pl-10 pr-10 h-12 bg-white/5 border-white/10"
+                          value={formData.password}
+                          onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                         />
                         <button
                           type="button"
@@ -157,8 +189,12 @@ const Index = () => {
                         </button>
                       </div>
                     </div>
-                    <Button type="submit" className="w-full h-12 bg-[#1EAEDB] hover:bg-[#1EAEDB]/90">
-                      Create Account
+                    <Button 
+                      type="submit" 
+                      className="w-full h-12 bg-[#1EAEDB] hover:bg-[#1EAEDB]/90"
+                      disabled={isLoading}
+                    >
+                      {isLoading ? "Creating Account..." : "Create Account"}
                     </Button>
                   </div>
                 </form>
@@ -172,15 +208,6 @@ const Index = () => {
             </div>
 
             <Separator className="my-4 bg-white/10" />
-
-            <div className="space-y-4">
-              <Button variant="outline" className="w-full border-white/10 bg-white/5 hover:bg-white/10">
-                Continue with Google
-              </Button>
-              <Button variant="outline" className="w-full border-white/10 bg-white/5 hover:bg-white/10">
-                Continue with Apple
-              </Button>
-            </div>
           </CardContent>
         </Card>
       </main>
