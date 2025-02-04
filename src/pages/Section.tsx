@@ -21,7 +21,7 @@ const Section = () => {
       const { data, error } = await supabase
         .from("lessons")
         .select("*")
-        .eq("section_id", sectionId)
+        .eq("section_id", Number(sectionId))
         .order("order_number");
 
       if (error) throw error;

@@ -76,6 +76,8 @@ export const useUserProgress = () => {
       points?: number;
       last_position?: number;
       completed?: boolean;
+      section_id?: number;
+      lesson_id?: number;
     }) => {
       const user = (await supabase.auth.getUser()).data.user;
       if (!user) throw new Error("No user found");
