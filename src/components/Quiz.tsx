@@ -1,4 +1,4 @@
-
+```typescript
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useQuery, useMutation } from "@tanstack/react-query";
@@ -95,11 +95,6 @@ const Quiz = ({ lessonIds, onComplete, showLives = false, lives = 5, sectionId }
     const isCorrect = selectedAnswer === currentQuestion.correct_answer;
 
     if (isCorrect) {
-      toast({
-        title: "Correct!",
-        description: "Great job! Let's move on.",
-      });
-
       // Save progress
       const completedQuestions = [
         ...(quizProgress?.completed_questions || []),
@@ -161,7 +156,7 @@ const Quiz = ({ lessonIds, onComplete, showLives = false, lives = 5, sectionId }
           <Button
             key={index}
             variant={selectedAnswer === option ? "default" : "outline"}
-            className="w-full justify-start text-left"
+            className="w-full justify-start text-left px-4 py-3 min-h-[48px] whitespace-normal break-words"
             onClick={() => handleAnswerSelect(option)}
           >
             {option}
@@ -181,3 +176,4 @@ const Quiz = ({ lessonIds, onComplete, showLives = false, lives = 5, sectionId }
 };
 
 export default Quiz;
+```
