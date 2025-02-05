@@ -71,7 +71,7 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "sections"
             referencedColumns: ["id"]
-          }
+          },
         ]
       }
       profiles: {
