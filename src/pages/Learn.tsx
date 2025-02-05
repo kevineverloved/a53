@@ -1,19 +1,38 @@
 
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Heart, Menu, Car, Map, SignpostBig, Shield } from "lucide-react";
+import { Info, Menu, Car, Map, SignpostBig, Shield } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useUserProgress } from "@/hooks/useUserProgress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 const Learn = () => {
   const navigate = useNavigate();
   const { progress, sections, achievements, isLoading } = useUserProgress();
   const isMobile = useIsMobile();
+  const [licenseType, setLicenseType] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchLicenseType = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("license_type")
+          .eq("id", session.user.id)
+          .single();
+        
+        setLicenseType(profile?.license_type || null);
+      }
+    };
+    
+    fetchLicenseType();
+  }, []);
 
   const currentProgress = progress ? ((progress.last_position - 1) / 100) * 100 : 0;
-  const lives = progress?.lives || 5;
   const points = progress?.points || 0;
 
   const subjects = [
@@ -40,16 +59,14 @@ const Learn = () => {
         <div className="container mx-auto flex h-14 items-center justify-between px-4">
           <span className="font-georgia text-2xl font-bold">A53</span>
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-1">
-              {[...Array(5)].map((_, i) => (
-                <Heart
-                  key={i}
-                  className={`w-5 h-5 ${
-                    i < lives ? "text-red-500 fill-red-500" : "text-gray-500"
-                  }`}
-                />
-              ))}
-            </div>
+            <Button
+              variant="outline"
+              className="flex items-center gap-2"
+              onClick={() => navigate("/onboarding")}
+            >
+              <Info className="w-5 h-5" />
+              {licenseType ? `Learning ${licenseType === "code8" ? "Code 8" : "Code 10"}` : "Choose License"}
+            </Button>
             <div className="flex items-center gap-2">
               <Menu className="w-5 h-5 text-white" />
               <span>{points} pts</span>
