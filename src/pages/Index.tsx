@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,7 +19,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Eye, EyeOff, Lock, Mail, Menu, Trophy } from "lucide-react";
+import { Eye, EyeOff, Lock, Mail, Menu, Info } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
@@ -31,11 +31,19 @@ const Index = () => {
     password: "",
   });
   const { toast } = useToast();
+  const [licenseType, setLicenseType] = useState<string | null>(null);
 
   useEffect(() => {
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("license_type")
+          .eq("id", session.user.id)
+          .single();
+        
+        setLicenseType(profile?.license_type || null);
         navigate('/learn');
       }
     };
@@ -116,9 +124,16 @@ const Index = () => {
             <Button
               variant="ghost"
               className="flex items-center gap-2"
+              onClick={() => navigate("/onboarding")}
+            >
+              <Info className="w-5 h-5" />
+              {licenseType ? `Learning ${licenseType === "code8" ? "Code 8" : "Code 10"}` : "Choose License"}
+            </Button>
+            <Button
+              variant="ghost"
+              className="flex items-center gap-2"
               onClick={() => navigate("/progress-roadway")}
             >
-              <Trophy className="w-5 h-5" />
               My Progress
             </Button>
             <DropdownMenu>

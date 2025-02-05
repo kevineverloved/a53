@@ -9,6 +9,7 @@ import Progress from "./pages/Progress";
 import Section from "./pages/Section";
 import NotFound from "./pages/NotFound";
 import ProgressRoadway from "./pages/ProgressRoadway";
+import Onboarding from "./pages/Onboarding";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/progress" element={<Progress />} />
           <Route path="/progress-roadway" element={<ProgressRoadway />} />
           <Route path="/learn/section/:sectionId" element={<Section />} />
+          <Route path="/onboarding" element={<Onboarding />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
