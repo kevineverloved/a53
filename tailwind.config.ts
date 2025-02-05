@@ -38,6 +38,7 @@ export default {
         georgia: ["Georgia", "serif"],
         roboto: ["Roboto", "sans-serif"],
         noir: ["NOIR", "sans-serif"],
+        oswald: ["Oswald", "sans-serif"],
       },
       keyframes: {
         "accordion-down": {

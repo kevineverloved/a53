@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Menu, Car, Map, SignpostBig, Shield } from "lucide-react";
+import { Menu, Car, Map, SignpostBig, Shield, Truck, Container, Scale, Navigation } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useUserProgress } from "@/hooks/useUserProgress";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -34,12 +34,63 @@ const Learn = () => {
 
   const currentProgress = progress ? ((progress.last_position - 1) / 100) * 100 : 0;
 
-  const subjects = [
-    { title: "Road Rules", icon: Map, color: "#8B5CF6", gradient: "linear-gradient(225deg, #FFE29F 0%, #FFA99F 48%, #FF719A 100%)" },
-    { title: "Car Rules", icon: Car, color: "#D946EF", gradient: "linear-gradient(to right, #ffc3a0 0%, #ffafbd 100%)" },
-    { title: "Traffic Sign Rules", icon: SignpostBig, color: "#F97316", gradient: "linear-gradient(to right, #ee9ca7, #ffdde1)" },
-    { title: "Safety Rules", icon: Shield, color: "#0EA5E9", gradient: "linear-gradient(to top, #accbee 0%, #e7f0fd 100%)" }
-  ];
+  const getSubjects = () => {
+    if (licenseType === 'code10') {
+      return [
+        { 
+          title: "Truck Navigation", 
+          icon: Navigation, 
+          color: "#8B5CF6", 
+          gradient: "linear-gradient(225deg, #FFE29F 0%, #FFA99F 48%, #FF719A 100%)" 
+        },
+        { 
+          title: "Load Management", 
+          icon: Container, 
+          color: "#D946EF", 
+          gradient: "linear-gradient(to right, #ffc3a0 0%, #ffafbd 100%)" 
+        },
+        { 
+          title: "Traffic Signs for Trucks", 
+          icon: SignpostBig, 
+          color: "#F97316", 
+          gradient: "linear-gradient(to right, #ee9ca7, #ffdde1)" 
+        },
+        { 
+          title: "Heavy Vehicle Safety", 
+          icon: Truck, 
+          color: "#0EA5E9", 
+          gradient: "linear-gradient(to top, #accbee 0%, #e7f0fd 100%)" 
+        }
+      ];
+    }
+    
+    return [
+      { 
+        title: "Road Rules", 
+        icon: Map, 
+        color: "#8B5CF6", 
+        gradient: "linear-gradient(225deg, #FFE29F 0%, #FFA99F 48%, #FF719A 100%)" 
+      },
+      { 
+        title: "Car Rules", 
+        icon: Car, 
+        color: "#D946EF", 
+        gradient: "linear-gradient(to right, #ffc3a0 0%, #ffafbd 100%)" 
+      },
+      { 
+        title: "Traffic Sign Rules", 
+        icon: SignpostBig, 
+        color: "#F97316", 
+        gradient: "linear-gradient(to right, #ee9ca7, #ffdde1)" 
+      },
+      { 
+        title: "Safety Rules", 
+        icon: Shield, 
+        color: "#0EA5E9", 
+        gradient: "linear-gradient(to top, #accbee 0%, #e7f0fd 100%)" 
+      }
+    ];
+  };
 
   if (isLoading) {
     return (
@@ -52,11 +103,13 @@ const Learn = () => {
     );
   }
 
+  const subjects = getSubjects();
+
   return (
     <div className="min-h-screen flex flex-col bg-black text-white">
       <header className="sticky top-0 z-50 w-full backdrop-blur-md bg-black/75 border-b border-white/10">
         <div className="container mx-auto flex h-14 items-center justify-between px-4">
-          <span className="font-noir text-2xl font-black">A53</span>
+          <span className="font-oswald text-2xl font-black">A53</span>
           <div className="flex items-center gap-4">
             <Button
               variant="outline"
@@ -101,10 +154,14 @@ const Learn = () => {
           </div>
 
           <div className="space-y-4">
-            <h2 className="text-2xl font-noir font-black">Road Rules</h2>
+            <h2 className="text-2xl font-georgia font-black">
+              {licenseType === 'code10' ? 'Truck Driving Rules' : 'Road Rules'}
+            </h2>
             <div className="glass p-6 rounded-lg">
               <p className="text-gray-400 mb-6">
-                Start your journey to learn road rules. Complete sections to earn points and achievements.
+                {licenseType === 'code10' 
+                  ? 'Start your journey to learn professional truck driving rules. Complete sections to earn points and achievements.'
+                  : 'Start your journey to learn road rules. Complete sections to earn points and achievements.'}
               </p>
               <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
                 <Button
@@ -118,7 +175,7 @@ const Learn = () => {
                   onClick={() => navigate(`/learn/section/${sections?.[0]?.id}`)}
                   className="w-full sm:w-auto bg-[#1EAEDB] hover:bg-[#1EAEDB]/90"
                 >
-                  Start Learning <Map className="ml-2 w-4 h-4" />
+                  Start Learning {licenseType === 'code10' ? <Truck className="ml-2 w-4 h-4" /> : <Map className="ml-2 w-4 h-4" />}
                 </Button>
               </div>
             </div>
