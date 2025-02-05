@@ -1,19 +1,27 @@
-
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Menu, Car, Map, SignpostBig, Shield, Truck, Container, Scale, Navigation } from "lucide-react";
+import { Menu, Car, Map, SignpostBig, Shield, Truck, Container, Scale, Navigation, User, Settings, Info, Mail, Sun, Moon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useUserProgress } from "@/hooks/useUserProgress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Learn = () => {
   const navigate = useNavigate();
   const { progress, sections, achievements, isLoading } = useUserProgress();
   const isMobile = useIsMobile();
   const [licenseType, setLicenseType] = useState<string | null>(null);
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
 
   useEffect(() => {
     const fetchLicenseType = async () => {
@@ -105,6 +113,11 @@ const Learn = () => {
 
   const subjects = getSubjects();
 
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
+    // Theme implementation will be added later
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-black text-white">
       <header className="sticky top-0 z-50 w-full backdrop-blur-md bg-black/75 border-b border-white/10">
@@ -118,7 +131,52 @@ const Learn = () => {
             >
               Choose License
             </Button>
-            <Menu className="w-5 h-5 text-white" />
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-64 bg-black/90 border border-white/10">
+                <DropdownMenuLabel className="font-syne">Menu</DropdownMenuLabel>
+                <DropdownMenuSeparator className="bg-white/10" />
+                <DropdownMenuItem className="flex flex-col items-start gap-1 py-3 cursor-pointer">
+                  <div className="flex items-center gap-2">
+                    <User className="h-4 w-4" />
+                    <span className="font-medium">Profile</span>
+                  </div>
+                  <span className="text-xs text-gray-400">View and edit your profile settings</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="flex flex-col items-start gap-1 py-3 cursor-pointer">
+                  <div className="flex items-center gap-2">
+                    <Settings className="h-4 w-4" />
+                    <span className="font-medium">Settings</span>
+                  </div>
+                  <span className="text-xs text-gray-400">Customize your app preferences</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="flex flex-col items-start gap-1 py-3 cursor-pointer">
+                  <div className="flex items-center gap-2">
+                    <Info className="h-4 w-4" />
+                    <span className="font-medium">About</span>
+                  </div>
+                  <span className="text-xs text-gray-400">Learn more about A53</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="flex flex-col items-start gap-1 py-3 cursor-pointer">
+                  <div className="flex items-center gap-2">
+                    <Mail className="h-4 w-4" />
+                    <span className="font-medium">Contact Us</span>
+                  </div>
+                  <span className="text-xs text-gray-400">Get in touch with our support team</span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator className="bg-white/10" />
+                <DropdownMenuItem className="flex items-center justify-between py-3 cursor-pointer" onClick={toggleTheme}>
+                  <div className="flex items-center gap-2">
+                    {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+                    <span className="font-medium">{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
+                  </div>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </header>
