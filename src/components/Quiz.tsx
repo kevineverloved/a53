@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useQuery, useMutation } from "@tanstack/react-query";
@@ -27,6 +26,8 @@ const Quiz = ({ lessonIds, onComplete, showLives = false, lives = 5, sectionId }
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showIncorrectDialog, setShowIncorrectDialog] = useState(false);
+  const [localLives, setLocalLives] = useState(lives);
+  const [isHeartAnimating, setIsHeartAnimating] = useState(false);
   const { toast } = useToast();
   
   // Fetch quiz progress
@@ -104,6 +105,20 @@ const Quiz = ({ lessonIds, onComplete, showLives = false, lives = 5, sectionId }
     const isCorrect = selectedAnswer === currentQuestion.correct_answer;
 
     if (isCorrect) {
+      // Award points for correct answer
+      const { error: progressError } = await supabase
+        .from("user_progress")
+        .update({ points: lives * 10 }) // More points for maintaining more lives
+        .eq("section_id", sectionId);
+
+      if (!progressError) {
+        toast({
+          title: "Correct!",
+          description: `You earned ${lives * 10} points!`,
+          variant: "default",
+        });
+      }
+
       // Save progress
       const completedQuestions = [
         ...(quizProgress?.completed_questions || []),
@@ -122,8 +137,22 @@ const Quiz = ({ lessonIds, onComplete, showLives = false, lives = 5, sectionId }
         setSelectedAnswer(null);
       }
     } else {
-      setShowIncorrectDialog(true);
-      onComplete(false);
+      setIsHeartAnimating(true);
+      setTimeout(() => {
+        setIsHeartAnimating(false);
+        setLocalLives((prev) => prev - 1);
+      }, 300);
+
+      if (localLives <= 1) {
+        setShowIncorrectDialog(true);
+        onComplete(false);
+      } else {
+        toast({
+          title: "Incorrect Answer",
+          description: "Try again! You can do this!",
+          variant: "destructive",
+        });
+      }
     }
   };
 
@@ -131,6 +160,7 @@ const Quiz = ({ lessonIds, onComplete, showLives = false, lives = 5, sectionId }
     setShowIncorrectDialog(false);
     setCurrentQuestionIndex(0);
     setSelectedAnswer(null);
+    setLocalLives(5); // Reset lives when starting over
   };
 
   if (isLoading || progressLoading) {
@@ -146,14 +176,14 @@ const Quiz = ({ lessonIds, onComplete, showLives = false, lives = 5, sectionId }
       <Dialog open={showIncorrectDialog} onOpenChange={handleDialogClose}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Incorrect Answer</DialogTitle>
+            <DialogTitle>Time for a Fresh Start!</DialogTitle>
             <DialogDescription>
-              Don't worry! Learning takes time. Let's start from the beginning and try again.
+              Don't worry! Learning takes time and practice. Let's go back to the lesson and try again with a fresh perspective. You've got this! 💪
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button onClick={handleDialogClose} className="w-full">
-              Okay, Let's Try Again
+              Return to Lesson
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -165,8 +195,14 @@ const Quiz = ({ lessonIds, onComplete, showLives = false, lives = 5, sectionId }
             {[...Array(5)].map((_, i) => (
               <Heart
                 key={i}
-                className={`w-5 h-5 ${
-                  i < (lives || 0) ? "text-red-500 fill-red-500" : "text-gray-500"
+                className={`w-5 h-5 transition-all duration-300 ${
+                  i < localLives 
+                    ? `text-red-500 fill-red-500 ${
+                        isHeartAnimating && i === localLives - 1
+                          ? "scale-150 opacity-0"
+                          : ""
+                      }`
+                    : "text-gray-500"
                 }`}
               />
             ))}
