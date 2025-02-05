@@ -213,6 +213,16 @@ const Quiz = ({ lessonIds, onComplete, showLives = false, lives = 5, sectionId }
           Question {currentQuestionIndex + 1} of {questions.length}
         </div>
         
+        {currentQuestionIndex === 0 && (
+          <div className="flex justify-center mb-6">
+            <img 
+              src="/lovable-uploads/950875d7-30e9-49e4-933b-d676b691e3f3.jpg" 
+              alt="Traffic Light"
+              className="w-48 h-auto"
+            />
+          </div>
+        )}
+        
         <h2 className="text-xl font-georgia">{currentQuestion?.question}</h2>
         
         <div className="space-y-3">
