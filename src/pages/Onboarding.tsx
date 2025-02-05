@@ -34,7 +34,10 @@ const Onboarding = () => {
 
       const { error } = await supabase
         .from("profiles")
-        .update({ license_type: licenseType })
+        .update({ 
+          license_type: licenseType,
+          updated_at: new Date().toISOString()
+        })
         .eq("id", user.id);
 
       if (error) throw error;
