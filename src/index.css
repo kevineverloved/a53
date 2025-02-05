@@ -27,10 +27,13 @@
   }
   body {
     @apply bg-background text-foreground antialiased transition-colors;
-    font-family: 'Roboto', sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, sans-serif;
   }
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Syne', sans-serif;
+  }
+  p {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, sans-serif;
   }
 }
 

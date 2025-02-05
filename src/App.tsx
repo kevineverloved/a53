@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -10,6 +11,7 @@ import Section from "./pages/Section";
 import NotFound from "./pages/NotFound";
 import ProgressRoadway from "./pages/ProgressRoadway";
 import Onboarding from "./pages/Onboarding";
+import Profile from "./pages/Profile";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +28,7 @@ const App = () => (
           <Route path="/progress-roadway" element={<ProgressRoadway />} />
           <Route path="/learn/section/:sectionId" element={<Section />} />
           <Route path="/onboarding" element={<Onboarding />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

@@ -148,7 +148,10 @@ const Learn = () => {
               <DropdownMenuContent align="end" className="w-64 bg-background border border-border">
                 <DropdownMenuLabel className="font-syne">Menu</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="flex flex-col items-start gap-1 py-3 cursor-pointer">
+                <DropdownMenuItem 
+                  className="flex flex-col items-start gap-1 py-3 cursor-pointer"
+                  onClick={() => navigate("/profile")}
+                >
                   <div className="flex items-center gap-2">
                     <User className="h-4 w-4" />
                     <span className="font-medium">Profile</span>
