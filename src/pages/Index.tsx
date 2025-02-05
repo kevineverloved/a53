@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
@@ -20,7 +19,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Eye, EyeOff, Lock, Mail, Menu } from "lucide-react";
+import { Eye, EyeOff, Lock, Mail, Menu, Trophy } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
@@ -33,7 +32,6 @@ const Index = () => {
   });
   const { toast } = useToast();
 
-  // Check for authenticated session on mount
   useEffect(() => {
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
@@ -44,7 +42,6 @@ const Index = () => {
     
     checkSession();
 
-    // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session) {
         navigate('/learn');
@@ -115,24 +112,34 @@ const Index = () => {
       <header className="sticky top-0 z-50 w-full backdrop-blur-md bg-black/75 border-b border-white/10">
         <div className="container mx-auto flex h-14 items-center justify-between px-4">
           <span className="font-georgia text-2xl font-bold">A53</span>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <Menu className="h-5 w-5" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuItem onClick={() => navigate("/learn")}>
-                Learn
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate("/progress")}>
-                Progress
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate("/settings")}>
-                Settings
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <div className="flex items-center gap-4">
+            <Button
+              variant="ghost"
+              className="flex items-center gap-2"
+              onClick={() => navigate("/progress-roadway")}
+            >
+              <Trophy className="w-5 h-5" />
+              My Progress
+            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem onClick={() => navigate("/learn")}>
+                  Learn
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/progress")}>
+                  Progress
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/settings")}>
+                  Settings
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       </header>
 
