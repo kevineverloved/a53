@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -95,7 +96,7 @@ const Index = () => {
     <div className="min-h-screen flex flex-col bg-black text-white">
       <header className="sticky top-0 z-50 w-full backdrop-blur-md bg-black/75 border-b border-white/10">
         <div className="container mx-auto flex h-14 items-center justify-between px-4">
-          <span className="font-georgia text-2xl font-bold">A53</span>
+          <span className="font-syne text-2xl font-bold">A53</span>
           <div className="flex items-center gap-4">
             <Button
               variant="ghost"
@@ -129,42 +130,42 @@ const Index = () => {
       <main className="flex-grow container mx-auto px-4 py-8 mb-16 md:mb-0">
         <Card className="max-w-md mx-auto glass">
           <CardHeader>
-            <CardTitle className="font-georgia text-xl">Welcome to A53</CardTitle>
-            <CardDescription className="text-gray-400">Sign in or create an account to get started</CardDescription>
+            <CardTitle className="font-syne text-xl">Welcome to A53</CardTitle>
+            <CardDescription className="text-gray-400 font-roboto">Sign in or create an account to get started</CardDescription>
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="login" className="w-full">
               <TabsList className="grid w-full grid-cols-2 bg-white/5">
-                <TabsTrigger value="login">Login</TabsTrigger>
-                <TabsTrigger value="register">Register</TabsTrigger>
+                <TabsTrigger value="login" className="font-syne">Login</TabsTrigger>
+                <TabsTrigger value="register" className="font-syne">Register</TabsTrigger>
               </TabsList>
               
               <TabsContent value="login">
                 <form onSubmit={handleSignIn}>
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="email">Email</Label>
+                      <Label htmlFor="email" className="font-syne">Email</Label>
                       <div className="relative">
                         <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                         <Input
                           id="email"
                           type="email"
                           placeholder="Enter your email"
-                          className="pl-10 h-12 bg-white/5 border-white/10"
+                          className="pl-10 h-12 bg-white/5 border-white/10 font-roboto"
                           value={formData.email}
                           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         />
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="password">Password</Label>
+                      <Label htmlFor="password" className="font-syne">Password</Label>
                       <div className="relative">
                         <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                         <Input
                           id="password"
                           type={showPassword ? "text" : "password"}
                           placeholder="Enter your password"
-                          className="pl-10 pr-10 h-12 bg-white/5 border-white/10"
+                          className="pl-10 pr-10 h-12 bg-white/5 border-white/10 font-roboto"
                           value={formData.password}
                           onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                         />
@@ -183,7 +184,7 @@ const Index = () => {
                     </div>
                     <Button
                       type="submit"
-                      className="w-full h-12 bg-[#1EAEDB] hover:bg-[#1EAEDB]/90"
+                      className="w-full h-12 bg-[#1EAEDB] hover:bg-[#1EAEDB]/90 font-syne"
                       disabled={isLoading}
                     >
                       {isLoading ? "Signing in..." : "Sign In"}
@@ -196,28 +197,28 @@ const Index = () => {
                 <form onSubmit={handleSignUp}>
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="register-email">Email</Label>
+                      <Label htmlFor="register-email" className="font-syne">Email</Label>
                       <div className="relative">
                         <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                         <Input
                           id="register-email"
                           type="email"
                           placeholder="Enter your email"
-                          className="pl-10 h-12 bg-white/5 border-white/10"
+                          className="pl-10 h-12 bg-white/5 border-white/10 font-roboto"
                           value={formData.email}
                           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         />
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="register-password">Password</Label>
+                      <Label htmlFor="register-password" className="font-syne">Password</Label>
                       <div className="relative">
                         <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                         <Input
                           id="register-password"
                           type={showPassword ? "text" : "password"}
                           placeholder="Create a password"
-                          className="pl-10 pr-10 h-12 bg-white/5 border-white/10"
+                          className="pl-10 pr-10 h-12 bg-white/5 border-white/10 font-roboto"
                           value={formData.password}
                           onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                         />
@@ -236,7 +237,7 @@ const Index = () => {
                     </div>
                     <Button 
                       type="submit" 
-                      className="w-full h-12 bg-[#1EAEDB] hover:bg-[#1EAEDB]/90"
+                      className="w-full h-12 bg-[#1EAEDB] hover:bg-[#1EAEDB]/90 font-syne"
                       disabled={isLoading}
                     >
                       {isLoading ? "Creating Account..." : "Create Account"}
@@ -247,7 +248,7 @@ const Index = () => {
             </Tabs>
 
             <div className="mt-4 text-center">
-              <a href="#" className="text-sm text-[#1EAEDB] hover:text-[#1EAEDB]/80">
+              <a href="#" className="text-sm text-[#1EAEDB] hover:text-[#1EAEDB]/80 font-roboto">
                 Forgot your password?
               </a>
             </div>
@@ -257,7 +258,7 @@ const Index = () => {
         </Card>
       </main>
 
-      <footer className="bg-black border-t border-white/10 py-4 text-center text-sm text-gray-400">
+      <footer className="bg-black border-t border-white/10 py-4 text-center text-sm text-gray-400 font-roboto">
         © 2024 A53. All rights reserved.
       </footer>
     </div>

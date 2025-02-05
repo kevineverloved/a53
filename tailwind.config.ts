@@ -39,6 +39,7 @@ export default {
         roboto: ["Roboto", "sans-serif"],
         noir: ["NOIR", "sans-serif"],
         oswald: ["Oswald", "sans-serif"],
+        syne: ["Syne", "sans-serif"],
       },
       keyframes: {
         "accordion-down": {
