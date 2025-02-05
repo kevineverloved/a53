@@ -37,6 +37,7 @@ export default {
       fontFamily: {
         georgia: ["Georgia", "serif"],
         roboto: ["Roboto", "sans-serif"],
+        noir: ["NOIR", "sans-serif"],
       },
       keyframes: {
         "accordion-down": {

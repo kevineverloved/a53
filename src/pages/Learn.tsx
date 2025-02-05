@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Info, Menu, Car, Map, SignpostBig, Shield } from "lucide-react";
+import { Menu, Car, Map, SignpostBig, Shield } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useUserProgress } from "@/hooks/useUserProgress";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -56,15 +56,14 @@ const Learn = () => {
     <div className="min-h-screen flex flex-col bg-black text-white">
       <header className="sticky top-0 z-50 w-full backdrop-blur-md bg-black/75 border-b border-white/10">
         <div className="container mx-auto flex h-14 items-center justify-between px-4">
-          <span className="font-georgia text-2xl font-bold font-black">A53</span>
+          <span className="font-noir text-2xl font-black">A53</span>
           <div className="flex items-center gap-4">
             <Button
               variant="outline"
               className="flex items-center gap-2"
               onClick={() => navigate("/onboarding")}
             >
-              <Info className="w-5 h-5" />
-              {licenseType ? `Learning ${licenseType === "code8" ? "Code 8" : "Code 10"}` : "Choose License"}
+              Choose License
             </Button>
             <Menu className="w-5 h-5 text-white" />
           </div>
@@ -102,7 +101,7 @@ const Learn = () => {
           </div>
 
           <div className="space-y-4">
-            <h2 className="text-2xl font-georgia font-black">Road Rules</h2>
+            <h2 className="text-2xl font-noir font-black">Road Rules</h2>
             <div className="glass p-6 rounded-lg">
               <p className="text-gray-400 mb-6">
                 Start your journey to learn road rules. Complete sections to earn points and achievements.
