@@ -20,16 +20,13 @@ const LessonContent = ({ lesson, shouldShowQuiz, onNext }: LessonContentProps) =
     const loadImage = async () => {
       if (lesson.image_url) {
         try {
-          // Extract just the filename from the full URL path
-          const filename = lesson.image_url.split('/traffic_signs/')[1];
-          if (filename) {
-            const { data: { publicUrl } } = supabase
-              .storage
-              .from('traffic_signs')
-              .getPublicUrl(filename);
-            
-            setImageUrl(publicUrl);
-          }
+          const { data: { publicUrl } } = supabase
+            .storage
+            .from('traffic_signs')
+            .getPublicUrl(lesson.image_url.replace('/traffic_signs/', ''));
+          
+          console.log('Public URL:', publicUrl); // Debug log
+          setImageUrl(publicUrl);
         } catch (error) {
           console.error('Error loading image:', error);
         }
