@@ -18,10 +18,11 @@
     @apply border-border;
   }
   body {
-    @apply bg-black text-white font-roboto antialiased;
+    @apply bg-black text-white antialiased;
+    font-family: 'Roboto', sans-serif;
   }
   h1, h2, h3, h4, h5, h6 {
-    @apply font-georgia;
+    font-family: 'Syne', sans-serif;
   }
 }
 
@@ -30,3 +31,4 @@
     @apply bg-white/5 backdrop-blur-lg border border-white/10;
   }
 }
+
