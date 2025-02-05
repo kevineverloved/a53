@@ -5,6 +5,14 @@
 
 @layer base {
   :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 0%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 5.9% 10%;
+  }
+
+  .dark {
     --background: 0 0% 0%;
     --foreground: 0 0% 100%;
     --border: 240 3.7% 15.9%;
@@ -18,7 +26,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-black text-white antialiased;
+    @apply bg-background text-foreground antialiased transition-colors;
     font-family: 'Roboto', sans-serif;
   }
   h1, h2, h3, h4, h5, h6 {

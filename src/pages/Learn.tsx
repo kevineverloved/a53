@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Menu, Car, Map, SignpostBig, Shield, Truck, Container, Scale, Navigation, User, Settings, Info, Mail, Sun, Moon } from "lucide-react";
+import { Menu, Car, Map, SignpostBig, Shield, Truck, Container, Scale, Navigation, User, Settings, Info, Mail, Sun, Moon, CreditCard } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useUserProgress } from "@/hooks/useUserProgress";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -21,7 +21,12 @@ const Learn = () => {
   const { progress, sections, achievements, isLoading } = useUserProgress();
   const isMobile = useIsMobile();
   const [licenseType, setLicenseType] = useState<string | null>(null);
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
+    if (typeof window !== 'undefined') {
+      return document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+    }
+    return 'dark'
+  });
 
   useEffect(() => {
     const fetchLicenseType = async () => {
@@ -39,6 +44,14 @@ const Learn = () => {
     
     fetchLicenseType();
   }, []);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
+  };
 
   const currentProgress = progress ? ((progress.last_position - 1) / 100) * 100 : 0;
 
@@ -102,7 +115,7 @@ const Learn = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex flex-col bg-black text-white p-4">
+      <div className="min-h-screen flex flex-col bg-background text-foreground p-4">
         <div className="container mx-auto space-y-4">
           <Skeleton className="h-14 w-full" />
           <Skeleton className="h-[400px] w-full" />
@@ -113,14 +126,9 @@ const Learn = () => {
 
   const subjects = getSubjects();
 
-  const toggleTheme = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark');
-    // Theme implementation will be added later
-  };
-
   return (
-    <div className="min-h-screen flex flex-col bg-black text-white">
-      <header className="sticky top-0 z-50 w-full backdrop-blur-md bg-black/75 border-b border-white/10">
+    <div className="min-h-screen flex flex-col bg-background text-foreground">
+      <header className="sticky top-0 z-50 w-full backdrop-blur-md bg-background/75 border-b border-border">
         <div className="container mx-auto flex h-14 items-center justify-between px-4">
           <h1 className="font-syne text-2xl font-black">A53</h1>
           <div className="flex items-center gap-4">
@@ -137,38 +145,46 @@ const Learn = () => {
                   <Menu className="h-5 w-5" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-64 bg-black/90 border border-white/10">
+              <DropdownMenuContent align="end" className="w-64 bg-background border border-border">
                 <DropdownMenuLabel className="font-syne">Menu</DropdownMenuLabel>
-                <DropdownMenuSeparator className="bg-white/10" />
+                <DropdownMenuSeparator />
                 <DropdownMenuItem className="flex flex-col items-start gap-1 py-3 cursor-pointer">
                   <div className="flex items-center gap-2">
                     <User className="h-4 w-4" />
                     <span className="font-medium">Profile</span>
                   </div>
-                  <span className="text-xs text-gray-400">View and edit your profile settings</span>
+                  <span className="text-xs text-muted-foreground">View and edit your profile settings</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem className="flex flex-col items-start gap-1 py-3 cursor-pointer">
                   <div className="flex items-center gap-2">
                     <Settings className="h-4 w-4" />
                     <span className="font-medium">Settings</span>
                   </div>
-                  <span className="text-xs text-gray-400">Customize your app preferences</span>
+                  <span className="text-xs text-muted-foreground">Customize your app preferences</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem className="flex flex-col items-start gap-1 py-3 cursor-pointer">
                   <div className="flex items-center gap-2">
                     <Info className="h-4 w-4" />
                     <span className="font-medium">About</span>
                   </div>
-                  <span className="text-xs text-gray-400">Learn more about A53</span>
+                  <span className="text-xs text-muted-foreground">Learn more about A53</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem className="flex flex-col items-start gap-1 py-3 cursor-pointer">
                   <div className="flex items-center gap-2">
                     <Mail className="h-4 w-4" />
                     <span className="font-medium">Contact Us</span>
                   </div>
-                  <span className="text-xs text-gray-400">Get in touch with our support team</span>
+                  <span className="text-xs text-muted-foreground">Get in touch with our support team</span>
                 </DropdownMenuItem>
-                <DropdownMenuSeparator className="bg-white/10" />
+                <DropdownMenuSeparator />
+                <DropdownMenuItem className="flex flex-col items-start gap-1 py-3 cursor-pointer">
+                  <div className="flex items-center gap-2">
+                    <CreditCard className="h-4 w-4" />
+                    <span className="font-medium">Premium Access</span>
+                  </div>
+                  <span className="text-xs text-muted-foreground">Skip ads for only R20/month</span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
                 <DropdownMenuItem className="flex items-center justify-between py-3 cursor-pointer" onClick={toggleTheme}>
                   <div className="flex items-center gap-2">
                     {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
