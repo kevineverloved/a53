@@ -122,7 +122,7 @@ const Index = () => {
           <span className="font-georgia text-2xl font-bold">A53</span>
           <div className="flex items-center gap-4">
             <Button
-              variant="ghost"
+              variant="outline"
               className="flex items-center gap-2"
               onClick={() => navigate("/onboarding")}
             >
