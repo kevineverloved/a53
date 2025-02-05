@@ -10,10 +10,14 @@ export const useUserProgress = () => {
   const { data: progress, isLoading: progressLoading } = useQuery({
     queryKey: ["user-progress"],
     queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return null;
+
       const { data: userProgress, error } = await supabase
         .from("user_progress")
         .select("*")
-        .single();
+        .eq("user_id", user.id)
+        .maybeSingle();
 
       if (error && error.code !== "PGRST116") {
         toast({
@@ -22,6 +26,32 @@ export const useUserProgress = () => {
           variant: "destructive",
         });
         throw error;
+      }
+
+      // If no progress exists, create initial progress
+      if (!userProgress) {
+        const { data: newProgress, error: createError } = await supabase
+          .from("user_progress")
+          .insert({
+            user_id: user.id,
+            lives: 5,
+            points: 0,
+            last_position: 1,
+            completed: false
+          })
+          .select()
+          .single();
+
+        if (createError) {
+          toast({
+            title: "Error",
+            description: "Failed to create initial progress",
+            variant: "destructive",
+          });
+          throw createError;
+        }
+
+        return newProgress;
       }
 
       return userProgress;
@@ -79,7 +109,7 @@ export const useUserProgress = () => {
       section_id?: number;
       lesson_id?: number;
     }) => {
-      const user = (await supabase.auth.getUser()).data.user;
+      const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("No user found");
 
       const { data, error } = await supabase
@@ -117,3 +147,4 @@ export const useUserProgress = () => {
     updateProgress,
   };
 };
+
