@@ -7,25 +7,31 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 const Progress = () => {
   const navigate = useNavigate();
-  const { progress, sections, isLoading, updateProgress } = useUserProgress();
+  const { progress, sections, isLoading } = useUserProgress();
 
   const totalSquares = 100;
   const squares = Array.from({ length: totalSquares }, (_, i) => i + 1);
   const currentPosition = progress?.last_position || 1;
+  const points = progress?.points || 0;
 
   return (
     <div className="min-h-screen flex flex-col bg-black text-white">
       <header className="sticky top-0 z-50 w-full backdrop-blur-md bg-black/75 border-b border-white/10">
-        <div className="container mx-auto flex h-14 items-center px-4">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => navigate("/learn")}
-            className="mr-2"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </Button>
-          <span className="font-georgia text-2xl font-bold">Progress Map</span>
+        <div className="container mx-auto flex h-14 items-center justify-between px-4">
+          <div className="flex items-center">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate("/learn")}
+              className="mr-2"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </Button>
+            <span className="font-georgia text-2xl font-black">Progress Map</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="font-bold">{points} pts</span>
+          </div>
         </div>
       </header>
 

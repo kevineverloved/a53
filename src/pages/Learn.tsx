@@ -33,13 +33,12 @@ const Learn = () => {
   }, []);
 
   const currentProgress = progress ? ((progress.last_position - 1) / 100) * 100 : 0;
-  const points = progress?.points || 0;
 
   const subjects = [
-    { title: "Road Rules", icon: Map, color: "#1EAEDB" },
-    { title: "Car Rules", icon: Car, color: "#1EAEDB" },
-    { title: "Traffic Sign Rules", icon: SignpostBig, color: "#1EAEDB" },
-    { title: "Safety Rules", icon: Shield, color: "#1EAEDB" }
+    { title: "Road Rules", icon: Map, color: "#8B5CF6", gradient: "linear-gradient(225deg, #FFE29F 0%, #FFA99F 48%, #FF719A 100%)" },
+    { title: "Car Rules", icon: Car, color: "#D946EF", gradient: "linear-gradient(to right, #ffc3a0 0%, #ffafbd 100%)" },
+    { title: "Traffic Sign Rules", icon: SignpostBig, color: "#F97316", gradient: "linear-gradient(to right, #ee9ca7, #ffdde1)" },
+    { title: "Safety Rules", icon: Shield, color: "#0EA5E9", gradient: "linear-gradient(to top, #accbee 0%, #e7f0fd 100%)" }
   ];
 
   if (isLoading) {
@@ -57,7 +56,7 @@ const Learn = () => {
     <div className="min-h-screen flex flex-col bg-black text-white">
       <header className="sticky top-0 z-50 w-full backdrop-blur-md bg-black/75 border-b border-white/10">
         <div className="container mx-auto flex h-14 items-center justify-between px-4">
-          <span className="font-georgia text-2xl font-bold">A53</span>
+          <span className="font-georgia text-2xl font-bold font-black">A53</span>
           <div className="flex items-center gap-4">
             <Button
               variant="outline"
@@ -67,10 +66,7 @@ const Learn = () => {
               <Info className="w-5 h-5" />
               {licenseType ? `Learning ${licenseType === "code8" ? "Code 8" : "Code 10"}` : "Choose License"}
             </Button>
-            <div className="flex items-center gap-2">
-              <Menu className="w-5 h-5 text-white" />
-              <span>{points} pts</span>
-            </div>
+            <Menu className="w-5 h-5 text-white" />
           </div>
         </div>
       </header>
@@ -91,18 +87,22 @@ const Learn = () => {
               return (
                 <div
                   key={i}
-                  className="glass p-4 rounded-lg flex flex-col items-center justify-center gap-2 transition-transform hover:scale-105 cursor-pointer"
+                  className="p-4 rounded-lg flex flex-col items-center justify-center gap-2 transition-transform hover:scale-105 cursor-pointer"
                   onClick={() => navigate(`/learn/section/${i + 1}`)}
+                  style={{
+                    background: subject.gradient,
+                    backgroundClip: "padding-box"
+                  }}
                 >
-                  <Icon className="w-8 h-8 text-[#1EAEDB]" />
-                  <span className="text-sm text-center">{subject.title}</span>
+                  <Icon className="w-8 h-8" style={{ color: subject.color }} />
+                  <span className="text-sm text-center font-bold text-gray-800">{subject.title}</span>
                 </div>
               );
             })}
           </div>
 
           <div className="space-y-4">
-            <h2 className="text-2xl font-georgia">Road Rules</h2>
+            <h2 className="text-2xl font-georgia font-black">Road Rules</h2>
             <div className="glass p-6 rounded-lg">
               <p className="text-gray-400 mb-6">
                 Start your journey to learn road rules. Complete sections to earn points and achievements.

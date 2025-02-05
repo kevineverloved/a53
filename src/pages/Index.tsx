@@ -63,18 +63,9 @@ const Index = () => {
 
       if (error) throw error;
       
-      toast({
-        title: "Success!",
-        description: "You have successfully logged in.",
-      });
-      
       navigate('/learn');
     } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: error instanceof Error ? error.message : "An error occurred",
-      });
+      console.error('Sign in error:', error);
     } finally {
       setIsLoading(false);
     }
@@ -92,16 +83,9 @@ const Index = () => {
 
       if (error) throw error;
 
-      toast({
-        title: "Success!",
-        description: "Please check your email to confirm your account.",
-      });
+      console.log('Verification email sent');
     } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: error instanceof Error ? error.message : "An error occurred",
-      });
+      console.error('Sign up error:', error);
     } finally {
       setIsLoading(false);
     }
