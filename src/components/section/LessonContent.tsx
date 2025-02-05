@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -25,7 +26,7 @@ const LessonContent = ({ lesson, shouldShowQuiz, onNext }: LessonContentProps) =
             .from('traffic_signs')
             .getPublicUrl(lesson.image_url.replace('/traffic_signs/', ''));
           
-          console.log('Public URL:', publicUrl); // Debug log
+          console.log('Public URL:', publicUrl);
           setImageUrl(publicUrl);
         } catch (error) {
           console.error('Error loading image:', error);
@@ -38,7 +39,7 @@ const LessonContent = ({ lesson, shouldShowQuiz, onNext }: LessonContentProps) =
 
   return (
     <>
-      <h1 className="text-2xl font-georgia">{lesson.title}</h1>
+      <h1 className="text-2xl font-syne">{lesson.title}</h1>
       {imageUrl && (
         <div className="my-4">
           <img
@@ -48,7 +49,7 @@ const LessonContent = ({ lesson, shouldShowQuiz, onNext }: LessonContentProps) =
           />
         </div>
       )}
-      <p className="text-gray-300 leading-relaxed whitespace-pre-line">
+      <p className="text-gray-300 leading-relaxed whitespace-pre-line font-roboto">
         {lesson.content}
       </p>
       <div className="flex justify-end mt-6">

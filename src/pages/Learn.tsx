@@ -109,7 +109,7 @@ const Learn = () => {
     <div className="min-h-screen flex flex-col bg-black text-white">
       <header className="sticky top-0 z-50 w-full backdrop-blur-md bg-black/75 border-b border-white/10">
         <div className="container mx-auto flex h-14 items-center justify-between px-4">
-          <span className="font-oswald text-2xl font-black">A53</span>
+          <h1 className="font-syne text-2xl font-black">A53</h1>
           <div className="flex items-center gap-4">
             <Button
               variant="outline"
@@ -154,7 +154,7 @@ const Learn = () => {
           </div>
 
           <div className="space-y-4">
-            <h2 className="text-2xl font-georgia font-black">
+            <h2 className="text-2xl font-syne font-black">
               {licenseType === 'code10' ? 'Truck Driving Rules' : 'Road Rules'}
             </h2>
             <div className="glass p-6 rounded-lg">
