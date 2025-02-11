@@ -2,7 +2,6 @@
 import type { Config } from "tailwindcss";
 
 export default {
-  darkMode: ["class"],
   content: [
     "./pages/**/*.{ts,tsx}",
     "./components/**/*.{ts,tsx}",
@@ -20,11 +19,11 @@ export default {
     },
     extend: {
       colors: {
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
+        border: "hsl(240 3.7% 15.9%)",
+        input: "hsl(240 3.7% 15.9%)",
+        ring: "hsl(240 4.9% 83.9%)",
+        background: "hsl(240 10% 3.9%)",
+        foreground: "hsl(0 0% 98%)",
         primary: {
           DEFAULT: "#1EAEDB",
           foreground: "#FFFFFF",
@@ -32,6 +31,26 @@ export default {
         secondary: {
           DEFAULT: "#333333",
           foreground: "#FFFFFF",
+        },
+        muted: {
+          DEFAULT: "hsl(240 3.7% 15.9%)",
+          foreground: "hsl(240 5% 64.9%)",
+        },
+        accent: {
+          DEFAULT: "hsl(240 3.7% 15.9%)",
+          foreground: "hsl(0 0% 98%)",
+        },
+        destructive: {
+          DEFAULT: "hsl(0 62.8% 30.6%)",
+          foreground: "hsl(0 0% 98%)",
+        },
+        card: {
+          DEFAULT: "hsl(240 10% 3.9%)",
+          foreground: "hsl(0 0% 98%)",
+        },
+        popover: {
+          DEFAULT: "hsl(240 10% 3.9%)",
+          foreground: "hsl(0 0% 98%)",
         },
       },
       fontFamily: {
