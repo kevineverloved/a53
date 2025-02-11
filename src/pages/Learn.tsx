@@ -237,26 +237,42 @@ const Learn = () => {
 
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto space-y-8">
-          {/* Welcome Section */}
-          <motion.div
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            className="glass p-6 rounded-xl space-y-4"
-          >
-            <h2 className="text-2xl font-syne font-bold text-primary">
-              Howzit, {profile?.full_name || "Friend"}! 👋
-            </h2>
-            <p className="text-lg text-gray-300">
-              Ready to ace your learner's test? Let's make it happen!
-            </p>
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span>Overall Progress</span>
-                <span className="font-syne">{Math.round(currentProgress)}%</span>
-              </div>
-              <Progress value={currentProgress} className="h-3" />
+          <div className="space-y-2">
+            <div className="flex justify-between text-sm">
+              <span>Progress</span>
+              <span>{Math.round(currentProgress)}%</span>
             </div>
-          </motion.div>
+            <Progress value={currentProgress} className="bg-white/10" />
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {subjects.map((subject, i) => {
+              const Icon = subject.icon;
+              return (
+                <div
+                  key={i}
+                  className="p-4 rounded-lg flex flex-col items-center justify-center gap-2 transition-transform hover:scale-105 cursor-pointer relative overflow-hidden group"
+                  onClick={() => navigate(`/learn/section/${i + 1}`)}
+                  style={{
+                    background: subject.gradient,
+                    backgroundImage: subject.backgroundImage,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                  }}
+                >
+                  <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] group-hover:backdrop-blur-[1px] transition-all" />
+                  <Icon className="w-8 h-8 relative z-10" style={{ color: subject.color }} />
+                  <span className="text-sm text-center font-bold text-white relative z-10">{subject.title}</span>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="space-y-4">
+            <h2 className="text-2xl font-syne font-black">
+              {licenseType === 'code10' ? 'Truck Driving Rules' : 'Road Rules'}
+            </h2>
+          </div>
 
           {/* Learning Path */}
           <div className="space-y-6">

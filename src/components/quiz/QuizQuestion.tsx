@@ -1,3 +1,4 @@
+
 interface QuizQuestionProps {
   questionIndex: number;
   question: string;
@@ -6,9 +7,9 @@ interface QuizQuestionProps {
 
 const QuizQuestion = ({ questionIndex, question, imageUrl }: QuizQuestionProps) => {
   return (
-    <>
-      {questionIndex === 0 && imageUrl && (
-        <div className="flex justify-center mb-6">
+    <div className="space-y-6">
+      {imageUrl && (
+        <div className="flex justify-center">
           <img 
             src={imageUrl}
             alt="Question Image"
@@ -16,8 +17,8 @@ const QuizQuestion = ({ questionIndex, question, imageUrl }: QuizQuestionProps) 
           />
         </div>
       )}
-      <h2 className="text-xl font-georgia mb-6">{question}</h2>
-    </>
+      <h2 className="text-xl font-georgia">{question}</h2>
+    </div>
   );
 };
 
