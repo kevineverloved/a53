@@ -1,136 +1,117 @@
-
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { Car, Truck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
 
 const Onboarding = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(false);
-  const [selectedLicense, setSelectedLicense] = useState<string>("");
+  const [licenseType, setLicenseType] = useState<string>("code8");
 
-  const licenses = [
-    { code: "code1", name: "Code 1 - Motorcycles" },
-    { code: "codeA1", name: "Code A1 - Light motorcycle" },
-    { code: "codeA", name: "Code A - Motorcycle" },
-    { code: "codeB", name: "Code B - Light motor vehicle" },
-    { code: "codeC1", name: "Code C1 - Light heavy motor vehicle" },
-    { code: "codeC", name: "Code C - Heavy motor vehicle" },
-    { code: "codeEC1", name: "Code EC1 - Extra heavy articulated" },
-    { code: "codeEC", name: "Code EC - Extra heavy combination" }
-  ];
-
-  const handleLicenseChoice = async (licenseType: string) => {
-    setIsLoading(true);
+  const handleSubmit = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "Please sign in to continue",
-        });
-        navigate("/");
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        navigate("/login");
         return;
       }
 
-      console.log("Updating profile with license type:", licenseType); // Debug log
-
       const { error } = await supabase
         .from("profiles")
-        .update({ 
-          license_type: licenseType,
-          updated_at: new Date().toISOString()
-        })
-        .eq("id", user.id);
+        .update({ license_type: licenseType })
+        .eq("id", session.user.id);
 
-      if (error) {
-        console.error("Update error:", error); // Debug log
-        throw error;
-      }
+      if (error) throw error;
 
       toast({
-        title: "Success!",
-        description: `You've chosen to learn for a ${licenses.find(l => l.code === licenseType)?.name}.`,
+        title: "Welcome to A53!",
+        description: "Your license preference has been saved. Let's start learning!",
       });
-      
+
       navigate("/learn");
     } catch (error) {
-      console.error("Full error:", error); // Debug log
       toast({
         variant: "destructive",
-        title: "Error",
-        description: error instanceof Error ? error.message : "An error occurred",
+        title: "Eish!",
+        description: "Something went wrong. Please try again.",
       });
-    } finally {
-      setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      <main className="container mx-auto px-4 py-8">
-        <Card className="max-w-2xl mx-auto glass">
-          <CardHeader>
-            <CardTitle className="font-georgia text-2xl text-center">Choose Your License Type</CardTitle>
-            <CardDescription className="text-gray-400 text-center">
-              Select the type of license you want to learn for
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <Select
-              onValueChange={(value) => {
-                setSelectedLicense(value);
-                handleLicenseChoice(value);
-              }}
-              disabled={isLoading}
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select a license type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Motorcycle Licenses</SelectLabel>
-                  {licenses.slice(0, 3).map((license) => (
-                    <SelectItem key={license.code} value={license.code}>
-                      {license.name}
-                    </SelectItem>
-                  ))}
-                  <SelectLabel>Motor Vehicle Licenses</SelectLabel>
-                  {licenses.slice(3).map((license) => (
-                    <SelectItem key={license.code} value={license.code}>
-                      {license.name}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-background text-foreground p-4">
+      <motion.div
+        initial={{ scale: 0.95, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        className="max-w-md w-full space-y-8"
+      >
+        <div className="text-center space-y-2">
+          <h1 className="text-3xl font-syne font-bold">Welcome to A53</h1>
+          <p className="text-gray-400">Choose your learner's license type to get started</p>
+        </div>
 
-            <p className="text-center text-sm text-gray-400 mt-6">
-              You can change your choice later in your profile settings
-            </p>
-          </CardContent>
-        </Card>
-      </main>
+        <RadioGroup
+          value={licenseType}
+          onValueChange={setLicenseType}
+          className="grid grid-cols-1 gap-4"
+        >
+          <Label
+            htmlFor="code8"
+            className={`glass p-6 rounded-xl cursor-pointer transition-all duration-200 ${
+              licenseType === "code8" ? "border-2 border-primary" : "border border-white/10"
+            }`}
+          >
+            <div className="flex items-center gap-4">
+              <div className="h-12 w-12 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                <Car className="h-6 w-6 text-blue-500" />
+              </div>
+              <div className="flex-grow">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-syne font-bold">Code 8</h3>
+                    <p className="text-sm text-gray-400">Light motor vehicles</p>
+                  </div>
+                  <RadioGroupItem value="code8" id="code8" />
+                </div>
+              </div>
+            </div>
+          </Label>
+
+          <Label
+            htmlFor="code10"
+            className={`glass p-6 rounded-xl cursor-pointer transition-all duration-200 ${
+              licenseType === "code10" ? "border-2 border-primary" : "border border-white/10"
+            }`}
+          >
+            <div className="flex items-center gap-4">
+              <div className="h-12 w-12 rounded-lg bg-orange-500/10 flex items-center justify-center">
+                <Truck className="h-6 w-6 text-orange-500" />
+              </div>
+              <div className="flex-grow">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-syne font-bold">Code 10</h3>
+                    <p className="text-sm text-gray-400">Heavy motor vehicles</p>
+                  </div>
+                  <RadioGroupItem value="code10" id="code10" />
+                </div>
+              </div>
+            </div>
+          </Label>
+        </RadioGroup>
+
+        <Button 
+          className="w-full bg-primary hover:bg-primary/90"
+          onClick={handleSubmit}
+        >
+          Get Started
+        </Button>
+      </motion.div>
     </div>
   );
 };

@@ -24,7 +24,8 @@ import {
   AlertTriangle,
   HelpCircle,
   Trash2,
-  User
+  User,
+  ArrowLeft
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -103,12 +104,15 @@ const Settings = () => {
         transition={{ duration: 0.3 }}
         className="sticky top-0 z-50 w-full backdrop-blur-md bg-background/75 border-b border-border"
       >
-        <div className="container mx-auto flex h-14 items-center justify-between px-4">
-          <Button variant="ghost" onClick={() => navigate("/learn")}>
-            Back to Learn
+        <div className="container mx-auto flex h-16 items-center gap-4 px-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate(-1)}
+          >
+            <ArrowLeft className="h-5 w-5" />
           </Button>
-          <h1 className="text-heading-1">Settings</h1>
-          <div className="w-[70px]" />
+          <h1 className="text-2xl font-syne font-bold">Settings</h1>
         </div>
       </motion.header>
 

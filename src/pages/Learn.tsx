@@ -87,34 +87,38 @@ const Learn = () => {
         { 
           title: "Truck Navigation", 
           icon: Navigation, 
-          color: "#8B5CF6",
-          gradient: "linear-gradient(225deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('/truck-navigation.jpg')",
+          color: "#8B5CF6", 
+          gradient: "linear-gradient(225deg, rgba(0, 0, 0, 0.5), rgba(139, 92, 246, 0.35))",
           description: "Master the roads like a pro truckie! Learn all about routes and navigation.",
-          bgImage: "/truck-navigation.jpg"
+          bgImage: "/truck-navigation.jpg",
+          backgroundImage: "url('/truck-navigation.jpg')"
         },
         { 
           title: "Load Management", 
           icon: Container, 
-          color: "#D946EF",
-          gradient: "linear-gradient(225deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('/load-management.jpg')",
+          color: "#D946EF", 
+          gradient: "linear-gradient(225deg, rgba(0, 0, 0, 0.5), rgba(217, 70, 239, 0.35))",
           description: "Keep your cargo lekker safe! Learn proper loading techniques.",
-          bgImage: "/load-management.jpg"
+          bgImage: "/load-management.jpg",
+          backgroundImage: "url('/load-management.jpg')"
         },
         { 
           title: "Traffic Signs for Trucks", 
           icon: SignpostBig, 
-          color: "#F97316",
-          gradient: "linear-gradient(225deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('/truck-signs.jpg')",
+          color: "#F97316", 
+          gradient: "linear-gradient(225deg, rgba(0, 0, 0, 0.5), rgba(249, 115, 22, 0.35))",
           description: "Know your signs, boet! Essential truck signage guide.",
-          bgImage: "/truck-signs.jpg"
+          bgImage: "/truck-signs.jpg",
+          backgroundImage: "url('/truck-signs.jpg')"
         },
         { 
           title: "Heavy Vehicle Safety", 
           icon: Truck, 
-          color: "#0EA5E9",
-          gradient: "linear-gradient(225deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('/truck-safety.jpg')",
+          color: "#0EA5E9", 
+          gradient: "linear-gradient(225deg, rgba(0, 0, 0, 0.5), rgba(14, 165, 233, 0.35))",
           description: "Stay safe on our roads! Master truck safety protocols.",
-          bgImage: "/truck-safety.jpg"
+          bgImage: "/truck-safety.jpg",
+          backgroundImage: "url('/truck-safety.jpg')"
         }
       ];
     }
@@ -123,34 +127,38 @@ const Learn = () => {
       { 
         title: "Road Rules", 
         icon: Map, 
-        color: "#8B5CF6",
-        gradient: "linear-gradient(225deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('/road-rules.jpg')",
+        color: "#8B5CF6", 
+        gradient: "linear-gradient(225deg, rgba(0, 0, 0, 0.5), rgba(139, 92, 246, 0.35))",
         description: "Get clued up on the rules of the road, my friend!",
-        bgImage: "/road-rules.jpg"
+        bgImage: "/road-rules.jpg",
+        backgroundImage: "url('/road-rules.jpg')"
       },
       { 
         title: "Car Rules", 
         icon: Car, 
-        color: "#D946EF",
-        gradient: "linear-gradient(225deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('/car-rules.jpg')",
+        color: "#D946EF", 
+        gradient: "linear-gradient(225deg, rgba(0, 0, 0, 0.5), rgba(217, 70, 239, 0.35))",
         description: "Drive like a pro! Master vehicle control basics.",
-        bgImage: "/car-rules.jpg"
+        bgImage: "/car-rules.jpg",
+        backgroundImage: "url('/car-rules.jpg')"
       },
       { 
         title: "Traffic Sign Rules", 
         icon: SignpostBig, 
-        color: "#F97316",
-        gradient: "linear-gradient(225deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('/traffic-signs.jpg')",
+        color: "#F97316", 
+        gradient: "linear-gradient(225deg, rgba(0, 0, 0, 0.5), rgba(249, 115, 22, 0.35))",
         description: "Know your signs, it's important, né?",
-        bgImage: "/traffic-signs.jpg"
+        bgImage: "/traffic-signs.jpg",
+        backgroundImage: "url('/traffic-signs.jpg')"
       },
       { 
         title: "Safety Rules", 
         icon: Shield, 
-        color: "#0EA5E9",
-        gradient: "linear-gradient(225deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('/safety-rules.jpg')",
+        color: "#0EA5E9", 
+        gradient: "linear-gradient(225deg, rgba(0, 0, 0, 0.5), rgba(14, 165, 233, 0.35))",
         description: "Keep it safe on the roads, always!",
-        bgImage: "/safety-rules.jpg"
+        bgImage: "/safety-rules.jpg",
+        backgroundImage: "url('/safety-rules.jpg')"
       }
     ];
   };
@@ -235,7 +243,7 @@ const Learn = () => {
   const subjects = getSubjects();
 
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground">
+    <div className="min-h-screen flex flex-col bg-background text-foreground pb-16 md:pb-0">
       <motion.header 
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -243,7 +251,7 @@ const Learn = () => {
         className="sticky top-0 z-50 w-full backdrop-blur-md bg-background/75 border-b border-border"
       >
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
-          <h1 className="text-2xl font-syne font-bold">K53 Learner's</h1>
+          <h1 className="text-2xl font-syne font-bold">A53 Learner's</h1>
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 bg-white/5 px-3 py-1.5 rounded-full">
               <Heart className="w-5 h-5 text-red-500" />
@@ -253,6 +261,32 @@ const Learn = () => {
               <Trophy className="w-5 h-5 text-primary" />
               <span className="font-syne">{userProgress?.totalPoints || 0}</span>
             </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="hidden md:flex">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuItem onClick={() => navigate("/profile")}>
+                  <User className="mr-2 h-4 w-4" />
+                  Profile
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/settings")}>
+                  <Settings className="mr-2 h-4 w-4" />
+                  Settings
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/progress")}>
+                  <TrendingUp className="mr-2 h-4 w-4" />
+                  Progress
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => navigate("/help")}>
+                  <Info className="mr-2 h-4 w-4" />
+                  Help & Support
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </motion.header>
@@ -271,20 +305,31 @@ const Learn = () => {
             {subjects.map((subject, i) => {
               const Icon = subject.icon;
               return (
-                <div
+                <motion.div
                   key={i}
-                  className="p-4 rounded-lg flex flex-col items-center justify-center gap-2 transition-transform hover:scale-105 cursor-pointer relative overflow-hidden group"
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  whileHover={{ scale: 1.02 }}
+                  className="relative p-6 rounded-xl flex flex-col items-center justify-center gap-2 cursor-pointer overflow-hidden group min-h-[160px]"
                   onClick={() => navigate(`/learn/section/${i + 1}`)}
                   style={{
-                    background: subject.gradient,
+                    backgroundImage: subject.backgroundImage,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                   }}
                 >
-                  <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] group-hover:backdrop-blur-[1px] transition-all" />
-                  <Icon className="w-8 h-8 relative z-10" style={{ color: subject.color }} />
-                  <span className="text-sm text-center font-bold text-white relative z-10">{subject.title}</span>
-                </div>
+                  <div 
+                    className="absolute inset-0 transition-all duration-300"
+                    style={{
+                      background: subject.gradient,
+                    }}
+                  />
+                  <div className="relative z-10 flex flex-col items-center gap-2 text-center">
+                    <Icon className="w-8 h-8" style={{ color: subject.color }} />
+                    <span className="text-sm font-bold text-white">{subject.title}</span>
+                    <p className="text-xs text-white/80 line-clamp-2">{subject.description}</p>
+                  </div>
+                </motion.div>
               );
             })}
           </div>
@@ -352,6 +397,48 @@ const Learn = () => {
           </motion.div>
         </div>
       </main>
+
+      {/* Mobile Bottom Navigation */}
+      <motion.nav
+        initial={{ y: 100 }}
+        animate={{ y: 0 }}
+        className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-background/95 backdrop-blur-lg border-t border-border"
+      >
+        <div className="grid grid-cols-4 h-full">
+          <Button
+            variant="ghost"
+            className="flex flex-col items-center justify-center gap-1 h-full rounded-none"
+            onClick={() => navigate("/learn")}
+          >
+            <BookOpen className="h-5 w-5" />
+            <span className="text-xs">Learn</span>
+          </Button>
+          <Button
+            variant="ghost"
+            className="flex flex-col items-center justify-center gap-1 h-full rounded-none"
+            onClick={() => navigate("/progress")}
+          >
+            <TrendingUp className="h-5 w-5" />
+            <span className="text-xs">Progress</span>
+          </Button>
+          <Button
+            variant="ghost"
+            className="flex flex-col items-center justify-center gap-1 h-full rounded-none"
+            onClick={() => navigate("/profile")}
+          >
+            <User className="h-5 w-5" />
+            <span className="text-xs">Profile</span>
+          </Button>
+          <Button
+            variant="ghost"
+            className="flex flex-col items-center justify-center gap-1 h-full rounded-none"
+            onClick={() => navigate("/settings")}
+          >
+            <Settings className="h-5 w-5" />
+            <span className="text-xs">Settings</span>
+          </Button>
+        </div>
+      </motion.nav>
     </div>
   );
 };
