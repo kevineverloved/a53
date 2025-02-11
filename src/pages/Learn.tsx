@@ -293,7 +293,7 @@ const Learn = () => {
       </motion.header>
 
       <main className="flex-grow container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto space-y-8">
+        <div className="max-w-4xl mx-auto space-y-6">
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
               <span>Progress</span>
