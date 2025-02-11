@@ -89,8 +89,9 @@ const Learn = () => {
       { 
         title: "Road Rules", 
         icon: Map, 
-        color: "#8B5CF6", 
-        gradient: "linear-gradient(225deg, #FFE29F 0%, #FFA99F 48%, #FF719A 100%)" 
+        color: "#8B5CF6",
+        gradient: undefined,
+        backgroundImage: "url('/lovable-uploads/950875d7-30e9-49e4-933b-d676b691e3f3.png')"
       },
       { 
         title: "Car Rules", 
@@ -216,15 +217,18 @@ const Learn = () => {
               return (
                 <div
                   key={i}
-                  className="p-4 rounded-lg flex flex-col items-center justify-center gap-2 transition-transform hover:scale-105 cursor-pointer"
+                  className="p-4 rounded-lg flex flex-col items-center justify-center gap-2 transition-transform hover:scale-105 cursor-pointer relative overflow-hidden group"
                   onClick={() => navigate(`/learn/section/${i + 1}`)}
                   style={{
                     background: subject.gradient,
-                    backgroundClip: "padding-box"
+                    backgroundImage: subject.backgroundImage,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
                   }}
                 >
-                  <Icon className="w-8 h-8" style={{ color: subject.color }} />
-                  <span className="text-sm text-center font-bold text-gray-800">{subject.title}</span>
+                  <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] group-hover:backdrop-blur-[1px] transition-all" />
+                  <Icon className="w-8 h-8 relative z-10" style={{ color: subject.color }} />
+                  <span className="text-sm text-center font-bold text-white relative z-10">{subject.title}</span>
                 </div>
               );
             })}
