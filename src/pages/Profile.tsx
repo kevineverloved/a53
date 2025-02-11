@@ -1,221 +1,253 @@
-
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Input } from "@/components/ui/input";
+import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, Upload, Map } from "lucide-react";
-import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import {
+  User,
+  Car,
+  Medal,
+  Clock,
+  Calendar,
+  BookOpen,
+  Trophy,
+  Star,
+  Award,
+  Timer,
+  AlertCircle,
+  CheckCircle2,
+  BadgeCheck
+} from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
+interface Achievement {
+  id: number;
+  title: string;
+  description: string;
+  icon: any;
+  progress: number;
+  color: string;
+}
 
 const Profile = () => {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  const [uploading, setUploading] = useState(false);
-  const [location, setLocation] = useState("");
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-  const [leaderboard, setLeaderboard] = useState<any[]>([]);
+  const [profile, setProfile] = useState<any>(null);
+  const [achievements, setAchievements] = useState<Achievement[]>([
+    {
+      id: 1,
+      title: "Quick Learner",
+      description: "Complete 5 lessons in one day",
+      icon: Clock,
+      progress: 60,
+      color: "#4F46E5"
+    },
+    {
+      id: 2,
+      title: "Perfect Score",
+      description: "Score 100% in any test",
+      icon: Star,
+      progress: 40,
+      color: "#9333EA"
+    },
+    {
+      id: 3,
+      title: "Road Master",
+      description: "Complete all road rules sections",
+      icon: Car,
+      progress: 75,
+      color: "#EA580C"
+    }
+  ]);
 
   useEffect(() => {
-    getProfile();
-    getLeaderboard();
+    const fetchProfile = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        const { data } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", session.user.id)
+          .single();
+        setProfile(data);
+      }
+    };
+    
+    fetchProfile();
   }, []);
 
-  async function getProfile() {
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        navigate('/');
-        return;
-      }
-
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('avatar_url, location')
-        .eq('id', session.user.id)
-        .single();
-
-      if (error) {
-        throw error;
-      }
-
-      if (data) {
-        setAvatarUrl(data.avatar_url);
-        setLocation(data.location || '');
-      }
-    } catch (error) {
-      toast.error('Error loading profile');
-      console.error(error);
-    }
-  }
-
-  async function getLeaderboard() {
-    try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('email, location, points')
-        .order('points', { ascending: false })
-        .limit(10);
-
-      if (error) throw error;
-      setLeaderboard(data || []);
-    } catch (error) {
-      console.error('Error fetching leaderboard:', error);
-    }
-  }
-
-  async function updateProfile() {
-    try {
-      setLoading(true);
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) return;
-
-      const { error } = await supabase
-        .from('profiles')
-        .update({
-          location,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', session.user.id);
-
-      if (error) throw error;
-      toast.success('Profile updated successfully');
-    } catch (error) {
-      toast.error('Error updating profile');
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  async function uploadAvatar(event: React.ChangeEvent<HTMLInputElement>) {
-    try {
-      setUploading(true);
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) return;
-
-      if (!event.target.files || event.target.files.length === 0) {
-        throw new Error('You must select an image to upload.');
-      }
-
-      const file = event.target.files[0];
-      const fileExt = file.name.split('.').pop();
-      const filePath = `${session.user.id}.${fileExt}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from('avatars')
-        .upload(filePath, file, { upsert: true });
-
-      if (uploadError) throw uploadError;
-
-      const { data: { publicUrl } } = supabase.storage
-        .from('avatars')
-        .getPublicUrl(filePath);
-
-      const { error: updateError } = await supabase
-        .from('profiles')
-        .update({ avatar_url: publicUrl })
-        .eq('id', session.user.id);
-
-      if (updateError) throw updateError;
-      
-      setAvatarUrl(publicUrl);
-      toast.success('Avatar updated successfully');
-    } catch (error) {
-      toast.error('Error uploading avatar');
-      console.error(error);
-    } finally {
-      setUploading(false);
-    }
+  if (!profile) {
+    return <div>Loading...</div>;
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-syne font-black mb-8">Profile</h1>
-        
-        <div className="glass p-6 rounded-lg mb-8">
-          <div className="flex flex-col items-center mb-6">
-            <Avatar className="w-32 h-32 mb-4">
-              <AvatarImage src={avatarUrl || ''} />
-              <AvatarFallback>
-                {uploading ? <Loader2 className="w-8 h-8 animate-spin" /> : '?'}
-              </AvatarFallback>
-            </Avatar>
-            
-            <div className="flex items-center gap-2">
-              <input
-                type="file"
-                accept="image/*"
-                onChange={uploadAvatar}
-                className="hidden"
-                id="avatar-upload"
-                disabled={uploading}
-              />
-              <Button
-                variant="outline"
-                className="flex items-center gap-2"
-                onClick={() => document.getElementById('avatar-upload')?.click()}
-                disabled={uploading}
-              >
-                <Upload className="w-4 h-4" />
-                {uploading ? 'Uploading...' : 'Upload Photo'}
-              </Button>
-            </div>
-          </div>
-
-          <div className="space-y-4 max-w-md mx-auto">
-            <div>
-              <label className="block text-sm font-medium mb-2">Location</label>
-              <div className="flex gap-2">
-                <Input
-                  type="text"
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                  placeholder="Enter your location"
-                  className="flex-1"
-                />
-                <Button onClick={() => {
-                  if ("geolocation" in navigator) {
-                    navigator.geolocation.getCurrentPosition((position) => {
-                      setLocation(`${position.coords.latitude}, ${position.coords.longitude}`);
-                    });
-                  }
-                }}>
-                  <Map className="w-4 h-4" />
-                </Button>
-              </div>
-            </div>
-
-            <Button 
-              onClick={updateProfile} 
-              disabled={loading}
-              className="w-full"
-            >
-              {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
-              Save Changes
-            </Button>
-          </div>
+    <div className="min-h-screen bg-background text-foreground">
+      <motion.header 
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.3 }}
+        className="sticky top-0 z-50 w-full backdrop-blur-md bg-background/75 border-b border-border"
+      >
+        <div className="container mx-auto flex h-14 items-center justify-between px-4">
+          <Button variant="ghost" onClick={() => navigate("/learn")}>
+            Back to Learn
+          </Button>
+          <h1 className="text-heading-1">Profile</h1>
+          <div className="w-[70px]" /> {/* Spacer for alignment */}
         </div>
+      </motion.header>
 
-        <div className="glass p-6 rounded-lg">
-          <h2 className="text-2xl font-syne font-bold mb-6">Local Leaderboard</h2>
-          <div className="space-y-4">
-            {leaderboard.map((user, index) => (
-              <div 
-                key={index}
-                className="flex items-center justify-between p-4 rounded-lg bg-white/5"
-              >
-                <div className="flex items-center gap-4">
-                  <span className="text-2xl font-syne font-bold">{index + 1}</span>
-                  <span className="font-sf-pro">{user.email}</span>
+      <main className="container mx-auto px-4 py-8">
+        <div className="max-w-4xl mx-auto space-y-8">
+          {/* Profile Header */}
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.3 }}
+            className="glass p-6 rounded-xl space-y-6"
+          >
+            <div className="flex items-start gap-6">
+              <div className="h-20 w-20 rounded-xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center">
+                <User className="h-10 w-10 text-white" />
+              </div>
+              <div className="flex-grow">
+                <h2 className="text-2xl font-bold mb-2">{profile.full_name || "Learner Driver"}</h2>
+                <div className="flex flex-wrap gap-4">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Car className="h-4 w-4" />
+                    <span>{profile.license_type || "Code 8"}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Calendar className="h-4 w-4" />
+                    <span>Joined {new Date(profile.created_at).toLocaleDateString()}</span>
+                  </div>
                 </div>
-                <span className="font-sf-pro font-medium">{user.points} points</span>
               </div>
-            ))}
-          </div>
+            </div>
+          </motion.div>
+
+          {/* Learning Progress */}
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.3, delay: 0.1 }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-4"
+          >
+            <div className="glass p-6 rounded-xl">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="h-12 w-12 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                  <BookOpen className="h-6 w-6 text-blue-500" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold">Lessons Completed</h3>
+                  <p className="text-2xl font-bold text-blue-500">24</p>
+                </div>
+              </div>
+              <Progress value={60} className="bg-blue-500/10" />
+            </div>
+
+            <div className="glass p-6 rounded-xl">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="h-12 w-12 rounded-lg bg-purple-500/10 flex items-center justify-center">
+                  <Trophy className="h-6 w-6 text-purple-500" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold">Test Scores</h3>
+                  <p className="text-2xl font-bold text-purple-500">85%</p>
+                </div>
+              </div>
+              <Progress value={85} className="bg-purple-500/10" />
+            </div>
+
+            <div className="glass p-6 rounded-xl">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="h-12 w-12 rounded-lg bg-orange-500/10 flex items-center justify-center">
+                  <Timer className="h-6 w-6 text-orange-500" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold">Study Time</h3>
+                  <p className="text-2xl font-bold text-orange-500">12h</p>
+                </div>
+              </div>
+              <Progress value={40} className="bg-orange-500/10" />
+            </div>
+          </motion.div>
+
+          {/* Recent Activity */}
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.3, delay: 0.2 }}
+            className="glass p-6 rounded-xl space-y-6"
+          >
+            <h3 className="text-xl font-bold flex items-center gap-2">
+              <Clock className="h-5 w-5" />
+              Recent Activity
+            </h3>
+            <div className="space-y-4">
+              <div className="flex items-start gap-4">
+                <div className="h-8 w-8 rounded-full bg-green-500/10 flex items-center justify-center">
+                  <CheckCircle2 className="h-4 w-4 text-green-500" />
+                </div>
+                <div>
+                  <p className="font-medium">Completed Road Signs Test</p>
+                  <p className="text-sm text-muted-foreground">Score: 90% • 2 hours ago</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-4">
+                <div className="h-8 w-8 rounded-full bg-blue-500/10 flex items-center justify-center">
+                  <BookOpen className="h-4 w-4 text-blue-500" />
+                </div>
+                <div>
+                  <p className="font-medium">Started Traffic Rules Section</p>
+                  <p className="text-sm text-muted-foreground">Progress: 20% • 5 hours ago</p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Achievements */}
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.3, delay: 0.3 }}
+            className="space-y-6"
+          >
+            <h3 className="text-xl font-bold flex items-center gap-2">
+              <Medal className="h-5 w-5" />
+              Achievements
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {achievements.map((achievement) => {
+                const Icon = achievement.icon;
+                return (
+                  <motion.div
+                    key={achievement.id}
+                    initial={{ scale: 0.95, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ duration: 0.3 }}
+                    className="glass p-6 rounded-xl space-y-4"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div 
+                        className="h-12 w-12 rounded-lg flex items-center justify-center"
+                        style={{ backgroundColor: `${achievement.color}20` }}
+                      >
+                        <Icon className="h-6 w-6" style={{ color: achievement.color }} />
+                      </div>
+                      <div>
+                        <h4 className="font-semibold">{achievement.title}</h4>
+                        <p className="text-sm text-muted-foreground">{achievement.description}</p>
+                      </div>
+                    </div>
+                    <Progress value={achievement.progress} className="bg-white/10" />
+                    <p className="text-sm text-right text-muted-foreground">{achievement.progress}%</p>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </motion.div>
         </div>
-      </div>
+      </main>
     </div>
   );
 };

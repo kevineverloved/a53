@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -32,6 +31,10 @@ const Index = () => {
     password: "",
   });
   const { toast } = useToast();
+  const [formErrors, setFormErrors] = useState({
+    email: '',
+    password: ''
+  });
 
   useEffect(() => {
     const checkSession = async () => {
@@ -52,8 +55,31 @@ const Index = () => {
     return () => subscription.unsubscribe();
   }, [navigate]);
 
+  const validateForm = () => {
+    const errors = {
+      email: '',
+      password: ''
+    };
+    
+    if (!formData.email) {
+      errors.email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      errors.email = 'Invalid email format';
+    }
+    
+    if (!formData.password) {
+      errors.password = 'Password is required';
+    } else if (formData.password.length < 6) {
+      errors.password = 'Password must be at least 6 characters';
+    }
+    
+    setFormErrors(errors);
+    return !errors.email && !errors.password;
+  };
+
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validateForm()) return;
     setIsLoading(true);
 
     try {

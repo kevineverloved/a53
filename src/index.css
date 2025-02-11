@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -5,14 +7,6 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 0%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 240 5.9% 10%;
-  }
-
-  .dark {
     --background: 0 0% 0%;
     --foreground: 0 0% 100%;
     --border: 240 3.7% 15.9%;
@@ -26,19 +20,47 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground antialiased transition-colors;
+    @apply bg-background text-foreground antialiased;
     font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, sans-serif;
   }
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Syne', sans-serif;
+  /* All headings use Syne font */
+  h1, h2, h3, h4, h5, h6, .font-heading {
+    @apply font-syne font-bold;
   }
-  p {
-    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, sans-serif;
+  /* All paragraph text uses system font */
+  p, .font-body {
+    @apply font-sans;
+  }
+  /* For any text that needs to be emphasized but isn't a heading */
+  .font-emphasis {
+    @apply font-syne font-medium;
   }
 }
 
 @layer utilities {
   .glass {
     @apply bg-white/5 backdrop-blur-lg border border-white/10;
+  }
+}
+
+/* Font size utilities for consistent typography */
+@layer utilities {
+  .text-heading-1 {
+    @apply text-4xl font-syne font-bold;
+  }
+  .text-heading-2 {
+    @apply text-3xl font-syne font-bold;
+  }
+  .text-heading-3 {
+    @apply text-2xl font-syne font-bold;
+  }
+  .text-heading-4 {
+    @apply text-xl font-syne font-bold;
+  }
+  .text-body {
+    @apply text-base font-sans;
+  }
+  .text-body-sm {
+    @apply text-sm font-sans;
   }
 }

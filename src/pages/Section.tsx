@@ -1,137 +1,133 @@
-
-import { useState } from "react";
-import { useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { useUserProgress } from "@/hooks/useUserProgress";
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { Heart, Trophy, ArrowLeft, BookOpen, Timer } from "lucide-react";
+import { learningPath } from "@/data/learningPath";
+import { Section as SectionType } from "@/types/learning";
+import { MAX_HEARTS } from "@/types/learning";
 import { supabase } from "@/integrations/supabase/client";
-import Quiz from "@/components/Quiz";
-import SectionHeader from "@/components/section/SectionHeader";
-import ProgressBar from "@/components/section/ProgressBar";
-import LessonContent from "@/components/section/LessonContent";
-import LoadingSkeleton from "@/components/section/LoadingSkeleton";
 
-const LESSONS_PER_QUIZ = 3;
-
-export const Section = () => {
+const Section = () => {
   const { sectionId } = useParams();
-  const [currentLessonIndex, setCurrentLessonIndex] = useState(0);
-  const [showQuiz, setShowQuiz] = useState(false);
-  const { progress, updateProgress } = useUserProgress();
+  const navigate = useNavigate();
+  const [section, setSection] = useState<SectionType | null>(null);
+  const [userProgress, setUserProgress] = useState<any>(null);
 
-  const { data: section, isLoading: sectionLoading } = useQuery({
-    queryKey: ["section", sectionId],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("sections")
-        .select("*")
-        .eq("id", Number(sectionId))
-        .single();
-
-      if (error) throw error;
-      return data;
-    },
-  });
-
-  const { data: lessons, isLoading: lessonsLoading } = useQuery({
-    queryKey: ["lessons", sectionId],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("lessons")
-        .select("*")
-        .eq("section_id", Number(sectionId))
-        .order("order_number");
-
-      if (error) throw error;
-      return data;
-    },
-  });
-
-  const currentLesson = lessons?.[currentLessonIndex];
-  const isLastLesson = currentLessonIndex === (lessons?.length ?? 0) - 1;
-  const shouldShowQuiz = 
-    (currentLessonIndex + 1) % LESSONS_PER_QUIZ === 0 || 
-    isLastLesson;
-
-  const getQuizLessonIds = () => {
-    if (!lessons) return [];
-    const startIndex = Math.floor(currentLessonIndex / LESSONS_PER_QUIZ) * LESSONS_PER_QUIZ;
-    const endIndex = Math.min(startIndex + LESSONS_PER_QUIZ, currentLessonIndex + 1);
-    return lessons.slice(startIndex, endIndex).map(lesson => lesson.id);
-  };
-
-  const handleNext = () => {
-    if (!lessons) return;
-    
-    if (shouldShowQuiz) {
-      setShowQuiz(true);
-    } else {
-      setCurrentLessonIndex((prev) => prev + 1);
+  useEffect(() => {
+    // Find the section from learningPath data
+    const foundSection = learningPath.flatMap(level => level.sections).find(s => s.id === Number(sectionId));
+    if (foundSection) {
+      setSection(foundSection);
     }
-  };
 
-  const handleQuizComplete = async (passed: boolean) => {
-    if (!lessons || !currentLesson) return;
-
-    if (passed) {
-      await updateProgress.mutateAsync({
-        section_id: Number(sectionId),
-        lesson_id: currentLesson?.id,
-        points: (progress?.points || 0) + 15,
-      });
-
-      if (isLastLesson) {
-        await updateProgress.mutateAsync({
-          section_id: Number(sectionId),
-          completed: true,
-        });
-      } else {
-        setCurrentLessonIndex((prev) => prev + 1);
+    // Fetch user progress
+    const fetchUserProgress = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        const { data } = await supabase
+          .from("user_progress")
+          .select("*")
+          .eq("user_id", session.user.id)
+          .single();
+        
+        setUserProgress(data);
       }
-      setShowQuiz(false);
-    } else {
-      await updateProgress.mutateAsync({
-        lives: Math.max(0, (progress?.lives || 5) - 1),
-      });
-    }
-  };
+    };
 
-  if (lessonsLoading || sectionLoading) {
-    return <LoadingSkeleton />;
+    fetchUserProgress();
+  }, [sectionId]);
+
+  if (!section) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p>Section not found</p>
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-black text-white">
-      <SectionHeader 
-        currentLessonIndex={currentLessonIndex}
-        subject={section?.subject}
-      />
+    <div className="min-h-screen flex flex-col bg-background text-foreground">
+      <motion.header 
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.3 }}
+        className="sticky top-0 z-50 w-full backdrop-blur-md bg-background/75 border-b border-border"
+      >
+        <div className="container mx-auto flex h-16 items-center justify-between px-4">
+          <div className="flex items-center gap-4">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate(-1)}
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+            <h1 className="text-2xl font-syne font-bold">{section.title}</h1>
+          </div>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 bg-white/5 px-3 py-1.5 rounded-full">
+              <Heart className="w-5 h-5 text-red-500" />
+              <span className="font-syne">{userProgress?.hearts || 0}/{MAX_HEARTS}</span>
+            </div>
+            <div className="flex items-center gap-2 bg-white/5 px-3 py-1.5 rounded-full">
+              <Trophy className="w-5 h-5 text-primary" />
+              <span className="font-syne">{userProgress?.totalPoints || 0}</span>
+            </div>
+          </div>
+        </div>
+      </motion.header>
 
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto space-y-8">
-          <ProgressBar 
-            currentIndex={currentLessonIndex}
-            total={lessons?.length || 0}
-          />
+          {/* Section Content */}
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            className="glass p-6 rounded-xl space-y-6"
+          >
+            <div>
+              <h2 className="text-xl font-syne font-bold">{section.title}</h2>
+              <p className="text-gray-400">{section.description}</p>
+            </div>
 
-          <div className="glass p-6 rounded-lg space-y-6">
-            {showQuiz ? (
-              <Quiz
-                lessonIds={getQuizLessonIds()}
-                onComplete={handleQuizComplete}
-                showLives={true}
-                lives={progress?.lives}
-                sectionId={Number(sectionId)}
-              />
-            ) : currentLesson ? (
-              <LessonContent
-                lesson={currentLesson}
-                shouldShowQuiz={shouldShowQuiz}
-                onNext={handleNext}
-              />
-            ) : (
-              <p>No lessons found for this section.</p>
+            {section.type === 'study' && section.content && (
+              <div className="space-y-8">
+                {section.content.sections.map((contentSection, index) => (
+                  <div key={index} className="space-y-4">
+                    <h3 className="text-lg font-syne font-bold">{contentSection.title}</h3>
+                    <p className="text-gray-300">{contentSection.content}</p>
+                    {contentSection.image && (
+                      <img 
+                        src={contentSection.image} 
+                        alt={contentSection.title}
+                        className="rounded-lg w-full object-cover"
+                      />
+                    )}
+                  </div>
+                ))}
+              </div>
             )}
-          </div>
+
+            {section.type === 'quiz' && section.quiz && (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Timer className="w-5 h-5 text-orange-500" />
+                    <span>{section.quiz.timeLimit} minutes</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Trophy className="w-5 h-5 text-primary" />
+                    <span>{section.quiz.totalPoints} points</span>
+                  </div>
+                </div>
+                <Button className="w-full" onClick={() => navigate(`/quiz/${section.quiz?.id}`)}>
+                  Start Quiz
+                </Button>
+              </div>
+            )}
+          </motion.div>
         </div>
       </main>
     </div>

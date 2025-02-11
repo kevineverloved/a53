@@ -1,8 +1,6 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
-  darkMode: ["class"],
   content: [
     "./pages/**/*.{ts,tsx}",
     "./components/**/*.{ts,tsx}",
@@ -35,10 +33,16 @@ export default {
         },
       },
       fontFamily: {
-        georgia: ["Georgia", "serif"],
-        roboto: ["Roboto", "sans-serif"],
-        noir: ["NOIR", "sans-serif"],
-        oswald: ["Oswald", "sans-serif"],
+        // System fonts for body text
+        sans: [
+          "-apple-system",
+          "BlinkMacSystemFont",
+          "'SF Pro Text'",
+          "'SF Pro Display'",
+          "system-ui",
+          "sans-serif"
+        ],
+        // Syne font for headings
         syne: ["Syne", "sans-serif"],
       },
       keyframes: {
