@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Menu, Car, Map, SignpostBig, Shield, Truck, Container, Scale, Navigation, User, Settings, Info, Mail, CreditCard, ArrowRight, Heart, Trophy, Star, Timer, BookOpen, Award, Target, TrendingUp, Lock } from "lucide-react";
@@ -251,7 +252,7 @@ const Learn = () => {
         className="sticky top-0 z-50 w-full backdrop-blur-md bg-background/75 border-b border-border"
       >
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
-          <h1 className="text-2xl font-syne font-bold">A53 Learner's</h1>
+          <h1 className="text-2xl font-syne font-bold">A53</h1>
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 bg-white/5 px-3 py-1.5 rounded-full">
               <Heart className="w-5 h-5 text-red-500" />
