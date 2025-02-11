@@ -57,7 +57,17 @@ export interface Achievement {
 }
 
 export interface UserProgress {
-  userId: string;
+  id: number;
+  user_id: string;
+  completed: boolean;
+  created_at: string;
+  last_position: number;
+  lesson_id: number;
+  lives: number;
+  points: number;
+  section_id: number;
+  updated_at: string;
+  hearts: number;
   totalPoints: number;
   currentLevel: number;
   completedSections: number[];
@@ -70,9 +80,8 @@ export interface UserProgress {
       attempts: number;
     };
   };
-  hearts: number;
-  lastActive: string;
   streakDays: number;
+  lastActive: string;
 }
 
 export interface LeaderboardEntry {

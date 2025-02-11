@@ -22,6 +22,16 @@ import { learningPath, achievements } from "@/data/learningPath";
 import { Level, UserProgress } from "@/types/learning";
 import { TOTAL_AVAILABLE_POINTS, MAX_HEARTS } from "@/types/learning";
 
+interface Subject {
+  title: string;
+  icon: any;
+  color: string;
+  gradient: string;
+  description: string;
+  bgImage: string;
+  backgroundImage?: string;
+}
+
 const Learn = () => {
   const navigate = useNavigate();
   const { progress, sections, achievements: userAchievements, isLoading } = useUserProgress();
@@ -50,7 +60,19 @@ const Learn = () => {
           .eq("user_id", session.user.id)
           .single();
 
-        setUserProgress(progressData);
+        if (progressData) {
+          setUserProgress({
+            ...progressData,
+            hearts: progressData.lives || MAX_HEARTS,
+            totalPoints: progressData.points || 0,
+            currentLevel: 1,
+            completedSections: [],
+            achievements: [],
+            quizScores: {},
+            streakDays: 0,
+            lastActive: progressData.updated_at || new Date().toISOString()
+          });
+        }
       }
     };
     
@@ -59,7 +81,7 @@ const Learn = () => {
 
   const currentProgress = progress ? ((progress.last_position - 1) / 100) * 100 : 0;
 
-  const getSubjects = () => {
+  const getSubjects = (): Subject[] => {
     if (licenseType === 'code10') {
       return [
         { 
@@ -255,7 +277,6 @@ const Learn = () => {
                   onClick={() => navigate(`/learn/section/${i + 1}`)}
                   style={{
                     background: subject.gradient,
-                    backgroundImage: subject.backgroundImage,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                   }}
