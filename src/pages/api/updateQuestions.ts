@@ -1,3 +1,4 @@
+
 import { supabase } from '@/integrations/supabase/client';
 
 export default async function handler(req: any, res: any) {
@@ -238,7 +239,8 @@ export default async function handler(req: any, res: any) {
         options: q.options,
         correct_answer: q.correct_answer,
         category: q.category
-      })));
+      })))
+      .select();
 
     if (error) {
       console.error('Error inserting questions:', error);
@@ -254,4 +256,4 @@ export default async function handler(req: any, res: any) {
     console.error('Error:', error);
     return res.status(500).json({ error: 'Internal server error' });
   }
-} 
+}

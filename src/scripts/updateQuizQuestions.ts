@@ -1,3 +1,4 @@
+
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = 'https://zytgblsewpfwraykljcf.supabase.co';
@@ -239,7 +240,8 @@ async function updateQuizQuestions() {
         options: q.options,
         correct_answer: q.correct_answer,
         category: q.category
-      })));
+      })))
+      .select();
 
     if (error) {
       console.error('Error inserting questions:', error);
@@ -247,7 +249,7 @@ async function updateQuizQuestions() {
     }
 
     console.log('Successfully updated quiz questions!');
-    console.log(`Inserted ${data?.length} questions`);
+    console.log(`Inserted ${data?.length ?? 0} questions`);
 
   } catch (error) {
     console.error('Error updating questions:', error);
@@ -255,4 +257,4 @@ async function updateQuizQuestions() {
 }
 
 // Run the update
-updateQuizQuestions(); 
+updateQuizQuestions();
