@@ -1,8 +1,9 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Car, Truck } from "lucide-react";
+import { Bike, Car, Truck } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -11,13 +12,34 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const Onboarding = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedLicense, setSelectedLicense] = useState<string>("");
 
-  const handleLicenseChoice = async (licenseType: "code8" | "code10") => {
+  const licenses = [
+    { code: "code1", name: "Code 1 - Motorcycles" },
+    { code: "codeA1", name: "Code A1 - Light motorcycle" },
+    { code: "codeA", name: "Code A - Motorcycle" },
+    { code: "codeB", name: "Code B - Light motor vehicle" },
+    { code: "codeC1", name: "Code C1 - Light heavy motor vehicle" },
+    { code: "codeC", name: "Code C - Heavy motor vehicle" },
+    { code: "codeEC1", name: "Code EC1 - Extra heavy articulated" },
+    { code: "codeEC", name: "Code EC - Extra heavy combination" }
+  ];
+
+  const handleLicenseChoice = async (licenseType: string) => {
     setIsLoading(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -44,7 +66,7 @@ const Onboarding = () => {
 
       toast({
         title: "Success!",
-        description: `You've chosen to learn for a ${licenseType === "code8" ? "Code 8" : "Code 10"} license.`,
+        description: `You've chosen to learn for a ${licenses.find(l => l.code === licenseType)?.name}.`,
       });
       
       navigate("/learn");
@@ -70,35 +92,33 @@ const Onboarding = () => {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Button
-                variant="outline"
-                size="lg"
-                className="h-40 flex flex-col items-center justify-center space-y-4 hover:bg-white/10"
-                onClick={() => handleLicenseChoice("code8")}
-                disabled={isLoading}
-              >
-                <Car className="w-16 h-16" />
-                <div className="text-center">
-                  <h3 className="font-bold text-lg">Code 8</h3>
-                  <p className="text-sm text-gray-400">Light motor vehicles</p>
-                </div>
-              </Button>
-
-              <Button
-                variant="outline"
-                size="lg"
-                className="h-40 flex flex-col items-center justify-center space-y-4 hover:bg-white/10"
-                onClick={() => handleLicenseChoice("code10")}
-                disabled={isLoading}
-              >
-                <Truck className="w-16 h-16" />
-                <div className="text-center">
-                  <h3 className="font-bold text-lg">Code 10</h3>
-                  <p className="text-sm text-gray-400">Heavy motor vehicles</p>
-                </div>
-              </Button>
-            </div>
+            <Select
+              onValueChange={(value) => {
+                setSelectedLicense(value);
+                handleLicenseChoice(value);
+              }}
+              disabled={isLoading}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select a license type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Motorcycle Licenses</SelectLabel>
+                  {licenses.slice(0, 3).map((license) => (
+                    <SelectItem key={license.code} value={license.code}>
+                      {license.name}
+                    </SelectItem>
+                  ))}
+                  <SelectLabel>Motor Vehicle Licenses</SelectLabel>
+                  {licenses.slice(3).map((license) => (
+                    <SelectItem key={license.code} value={license.code}>
+                      {license.name}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
 
             <p className="text-center text-sm text-gray-400 mt-6">
               You can change your choice later in your profile settings
