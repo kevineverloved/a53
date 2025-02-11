@@ -91,7 +91,7 @@ const Learn = () => {
         icon: Map, 
         color: "#8B5CF6",
         gradient: undefined,
-        backgroundImage: "url('/lovable-uploads/950875d7-30e9-49e4-933b-d676b691e3f3.png')"
+        backgroundImage: "url('/lovable-uploads/6d09aa68-b5cd-41ae-b4af-6c723a91317b.png')"
       },
       { 
         title: "Car Rules", 
