@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { Heart } from "lucide-react";
+import QuizQuestion from "./quiz/QuizQuestion";
 import {
   Dialog,
   DialogContent,
@@ -163,7 +164,7 @@ const Quiz = ({ lessonIds, onComplete, showLives = false, lives = 5, sectionId }
     setLocalLives(5); // Reset lives when starting over
   };
 
-  if (isLoading || progressLoading) {
+  if (isLoading) {
     return <Skeleton className="h-[200px] w-full" />;
   }
 
@@ -213,17 +214,11 @@ const Quiz = ({ lessonIds, onComplete, showLives = false, lives = 5, sectionId }
           Question {currentQuestionIndex + 1} of {questions.length}
         </div>
         
-        {currentQuestionIndex === 0 && (
-          <div className="flex justify-center mb-6">
-            <img 
-              src="/lovable-uploads/950875d7-30e9-49e4-933b-d676b691e3f3.jpg" 
-              alt="Traffic Light"
-              className="w-48 h-auto"
-            />
-          </div>
-        )}
-        
-        <h2 className="text-xl font-georgia">{currentQuestion?.question}</h2>
+        <QuizQuestion
+          questionIndex={currentQuestionIndex}
+          question={currentQuestion?.question || ""}
+          imageUrl={currentQuestion?.image_url}
+        />
         
         <div className="space-y-3">
           {currentQuestion?.options.map((option, index) => (

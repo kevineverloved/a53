@@ -147,6 +147,7 @@ export type Database = {
           correct_answer: string
           created_at: string | null
           id: number
+          image_url: string | null
           lesson_id: number | null
           options: string[]
           question: string
@@ -155,6 +156,7 @@ export type Database = {
           correct_answer: string
           created_at?: string | null
           id?: number
+          image_url?: string | null
           lesson_id?: number | null
           options: string[]
           question: string
@@ -163,6 +165,7 @@ export type Database = {
           correct_answer?: string
           created_at?: string | null
           id?: number
+          image_url?: string | null
           lesson_id?: number | null
           options?: string[]
           question?: string
