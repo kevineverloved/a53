@@ -3,7 +3,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Bike, Car, Truck } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -54,6 +53,8 @@ const Onboarding = () => {
         return;
       }
 
+      console.log("Updating profile with license type:", licenseType); // Debug log
+
       const { error } = await supabase
         .from("profiles")
         .update({ 
@@ -62,7 +63,10 @@ const Onboarding = () => {
         })
         .eq("id", user.id);
 
-      if (error) throw error;
+      if (error) {
+        console.error("Update error:", error); // Debug log
+        throw error;
+      }
 
       toast({
         title: "Success!",
@@ -71,6 +75,7 @@ const Onboarding = () => {
       
       navigate("/learn");
     } catch (error) {
+      console.error("Full error:", error); // Debug log
       toast({
         variant: "destructive",
         title: "Error",
