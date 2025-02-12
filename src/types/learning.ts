@@ -1,3 +1,4 @@
+
 export interface Level {
   id: number;
   title: string;
@@ -95,4 +96,4 @@ export interface LeaderboardEntry {
 export const TOTAL_AVAILABLE_POINTS = 1000;
 export const PASSING_GRADE = 750;
 export const MAX_HEARTS = 5;
-export const HEART_REGENERATION_TIME = 30 * 60 * 1000; // 30 minutes in milliseconds 
+export const HEART_REGENERATION_TIME = 30 * 60 * 1000; // 30 minutes in milliseconds
