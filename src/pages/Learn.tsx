@@ -312,7 +312,7 @@ const Learn = () => {
                   animate={{ scale: 1, opacity: 1 }}
                   whileHover={{ scale: 1.02 }}
                   className="relative p-6 rounded-xl flex flex-col items-center justify-center gap-2 cursor-pointer overflow-hidden group min-h-[160px]"
-                  onClick={() => navigate(`/learn/section/${i + 1}`)}
+                  onClick={() => navigate('/lessons', { state: { subject: subject.title } })}
                   style={{
                     backgroundImage: subject.backgroundImage,
                     backgroundSize: 'cover',
