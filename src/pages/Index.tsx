@@ -124,13 +124,6 @@ const Index = () => {
         <div className="container mx-auto flex h-14 items-center justify-between px-4">
           <span className="text-2xl font-bold">A53</span>
           <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              className="flex items-center gap-2"
-              onClick={() => navigate("/progress-roadway")}
-            >
-              My Progress
-            </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon">
@@ -292,4 +285,3 @@ const Index = () => {
 };
 
 export default Index;
-
