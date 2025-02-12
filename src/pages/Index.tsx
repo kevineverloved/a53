@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -149,7 +150,7 @@ const Index = () => {
       <main className="flex-grow container mx-auto px-4 py-8 mb-16 md:mb-0">
         <Card className="max-w-md mx-auto glass">
           <CardHeader>
-            <CardTitle>Welcome to A53</CardTitle>
+            <CardTitle>Welcome</CardTitle>
             <CardDescription>Sign in or create an account to get started</CardDescription>
           </CardHeader>
           <CardContent>
