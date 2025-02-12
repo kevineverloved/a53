@@ -38,30 +38,42 @@ export type Database = {
       }
       lessons: {
         Row: {
+          category: string | null
           content: string
           created_at: string | null
+          difficulty: Database["public"]["Enums"]["difficulty_level"] | null
           id: number
+          image_type: Database["public"]["Enums"]["image_type"] | null
           image_url: string | null
           order_number: number
           section_id: number | null
+          subcategory: string | null
           title: string
         }
         Insert: {
+          category?: string | null
           content: string
           created_at?: string | null
+          difficulty?: Database["public"]["Enums"]["difficulty_level"] | null
           id?: number
+          image_type?: Database["public"]["Enums"]["image_type"] | null
           image_url?: string | null
           order_number: number
           section_id?: number | null
+          subcategory?: string | null
           title: string
         }
         Update: {
+          category?: string | null
           content?: string
           created_at?: string | null
+          difficulty?: Database["public"]["Enums"]["difficulty_level"] | null
           id?: number
+          image_type?: Database["public"]["Enums"]["image_type"] | null
           image_url?: string | null
           order_number?: number
           section_id?: number | null
+          subcategory?: string | null
           title?: string
         }
         Relationships: [
@@ -144,31 +156,46 @@ export type Database = {
       }
       quiz_questions: {
         Row: {
+          category: string | null
           correct_answer: string
           created_at: string | null
+          difficulty: Database["public"]["Enums"]["difficulty_level"] | null
+          explanation: string | null
           id: number
           image_url: string | null
           lesson_id: number | null
           options: string[]
           question: string
+          question_type: Database["public"]["Enums"]["question_type"] | null
+          related_lesson_ids: number[] | null
         }
         Insert: {
+          category?: string | null
           correct_answer: string
           created_at?: string | null
+          difficulty?: Database["public"]["Enums"]["difficulty_level"] | null
+          explanation?: string | null
           id?: number
           image_url?: string | null
           lesson_id?: number | null
           options: string[]
           question: string
+          question_type?: Database["public"]["Enums"]["question_type"] | null
+          related_lesson_ids?: number[] | null
         }
         Update: {
+          category?: string | null
           correct_answer?: string
           created_at?: string | null
+          difficulty?: Database["public"]["Enums"]["difficulty_level"] | null
+          explanation?: string | null
           id?: number
           image_url?: string | null
           lesson_id?: number | null
           options?: string[]
           question?: string
+          question_type?: Database["public"]["Enums"]["question_type"] | null
+          related_lesson_ids?: number[] | null
         }
         Relationships: [
           {
@@ -182,30 +209,77 @@ export type Database = {
       }
       sections: {
         Row: {
+          content_type: string | null
           created_at: string | null
           description: string | null
           id: number
+          license_type: string | null
           order_number: number
           subject: string | null
           title: string
         }
         Insert: {
+          content_type?: string | null
           created_at?: string | null
           description?: string | null
           id?: number
+          license_type?: string | null
           order_number: number
           subject?: string | null
           title: string
         }
         Update: {
+          content_type?: string | null
           created_at?: string | null
           description?: string | null
           id?: number
+          license_type?: string | null
           order_number?: number
           subject?: string | null
           title?: string
         }
         Relationships: []
+      }
+      spaced_repetition: {
+        Row: {
+          correct_streak: number | null
+          created_at: string | null
+          id: string
+          interval_days: number | null
+          lesson_id: number | null
+          next_review: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          correct_streak?: number | null
+          created_at?: string | null
+          id?: string
+          interval_days?: number | null
+          lesson_id?: number | null
+          next_review?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          correct_streak?: number | null
+          created_at?: string | null
+          id?: string
+          interval_days?: number | null
+          lesson_id?: number | null
+          next_review?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "spaced_repetition_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "lessons"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_achievements: {
         Row: {
@@ -298,7 +372,13 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      difficulty_level: "basic" | "intermediate" | "advanced"
+      image_type: "sign" | "control" | "diagram" | "illustration"
+      question_type:
+        | "multipleChoice"
+        | "trueFalse"
+        | "imageIdentification"
+        | "scenarioBased"
     }
     CompositeTypes: {
       [_ in never]: never
