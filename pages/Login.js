@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
@@ -77,7 +78,7 @@ const Login = () => {
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            {isSignUp ? 'Create your account' : 'Sign in to your account'}
+            Welcome
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
             {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
@@ -189,4 +190,4 @@ const Login = () => {
   );
 };
 
-export default Login; 
+export default Login;
