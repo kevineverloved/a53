@@ -317,6 +317,7 @@ export type Database = {
           id: number
           last_position: number | null
           lesson_id: number | null
+          license_type: string | null
           lives: number | null
           points: number | null
           section_id: number | null
@@ -329,6 +330,7 @@ export type Database = {
           id?: number
           last_position?: number | null
           lesson_id?: number | null
+          license_type?: string | null
           lives?: number | null
           points?: number | null
           section_id?: number | null
@@ -341,6 +343,7 @@ export type Database = {
           id?: number
           last_position?: number | null
           lesson_id?: number | null
+          license_type?: string | null
           lives?: number | null
           points?: number | null
           section_id?: number | null

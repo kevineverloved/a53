@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Menu, Car, Map, SignpostBig, Shield, Truck, Container, Scale, Navigation, User, Settings, Info, Mail, CreditCard, ArrowRight, Heart, Trophy, Star, Timer, BookOpen, Award, Target, TrendingUp, Lock } from "lucide-react";
@@ -52,7 +51,7 @@ const Learn = () => {
           .single();
         
         setProfile(profileData);
-        setLicenseType(profileData?.license_type || null);
+        setLicenseType(profileData?.license_type || 'code_8');
 
         // Fetch user progress
         const { data: progressData } = await supabase
@@ -230,6 +229,16 @@ const Learn = () => {
     </motion.div>
   );
 
+  const handleGetStarted = () => {
+    navigate('/lessons', { 
+      state: { 
+        subject: 'Vehicle Controls',
+        autoStart: true,
+        lessonId: 'intro-controls'
+      }
+    });
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex flex-col bg-background text-foreground p-4">
@@ -349,7 +358,27 @@ const Learn = () => {
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {learningPath.map((level) => (
-                <LevelCard key={level.id} level={level} />
+                <motion.div
+                  key={level.id}
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  whileHover={{ scale: 1.02 }}
+                  className="relative p-6 rounded-xl border border-primary/20 bg-white/10 space-y-4 cursor-pointer"
+                  onClick={handleGetStarted}
+                >
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-xl font-syne font-bold">{level.title}</h3>
+                    <div className="flex items-center gap-2">
+                      <Trophy className="w-4 h-4 text-primary" />
+                      <span className="text-sm">{level.totalPoints} points</span>
+                    </div>
+                  </div>
+                  <p className="text-sm text-gray-300">{level.description}</p>
+                  <Button className="w-full">
+                    Get Started
+                    <ArrowRight className="ml-2 w-4 h-4" />
+                  </Button>
+                </motion.div>
               ))}
             </div>
           </div>

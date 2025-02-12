@@ -25,7 +25,8 @@ import {
   HelpCircle,
   Trash2,
   User,
-  ArrowLeft
+  ArrowLeft,
+  Car
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -68,6 +69,7 @@ const Settings = () => {
   const [language, setLanguage] = useState("english");
   const [autoPlay, setAutoPlay] = useState(true);
   const [showTimer, setShowTimer] = useState(true);
+  const [selectedLicense, setSelectedLicense] = useState("code_8");
 
   const handleSignOut = async () => {
     try {
@@ -88,12 +90,52 @@ const Settings = () => {
   };
 
   const handleDeleteAccount = async () => {
-    // Add account deletion logic here
     toast({
       variant: "destructive",
       title: "Delete Account",
       description: "This feature is not yet implemented.",
     });
+  };
+
+  const handleLicenseChange = async (newLicense: string) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      // Update user progress with new license type
+      const { error: progressError } = await supabase
+        .from("user_progress")
+        .upsert({
+          user_id: user.id,
+          license_type: newLicense,
+          last_position: 1, // Reset progress for new license
+          points: 0
+        })
+        .eq('user_id', user.id);
+
+      if (progressError) throw progressError;
+
+      // Update profiles table
+      const { error: profileError } = await supabase
+        .from("profiles")
+        .update({ license_type: newLicense })
+        .eq('id', user.id);
+
+      if (profileError) throw profileError;
+
+      setSelectedLicense(newLicense);
+      toast({
+        title: "License Updated",
+        description: "Your learning content has been updated.",
+      });
+    } catch (error) {
+      console.error("Error updating license:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to update license type. Please try again.",
+      });
+    }
   };
 
   return (
@@ -118,6 +160,27 @@ const Settings = () => {
 
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto space-y-6">
+          {/* License Type */}
+          <SettingsSection title="License Type" icon={Car}>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <Label>Select Your License</Label>
+                  <p className="text-sm text-muted-foreground">Choose which driver's license you want to learn</p>
+                </div>
+                <select
+                  value={selectedLicense}
+                  onChange={(e) => handleLicenseChange(e.target.value)}
+                  className="bg-transparent border border-input rounded-md px-3 py-2"
+                >
+                  <option value="code_8">Code 8 (Light Motor Vehicle)</option>
+                  <option value="code_10">Code 10 (Heavy Motor Vehicle)</option>
+                  <option value="code_14">Code 14 (Extra Heavy Motor Vehicle)</option>
+                </select>
+              </div>
+            </div>
+          </SettingsSection>
+
           {/* Appearance */}
           <SettingsSection title="Appearance" icon={Eye}>
             <div className="flex items-center justify-between">
@@ -318,4 +381,4 @@ const Settings = () => {
   );
 };
 
-export default Settings; 
+export default Settings;
