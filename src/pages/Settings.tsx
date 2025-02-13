@@ -13,11 +13,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Bell,
-  Moon,
-  Sun,
   Volume2,
   Languages,
   Shield,
@@ -29,12 +27,13 @@ import {
   Clock,
   Vibrate,
   BookOpen,
-  AlertTriangle,
   HelpCircle,
   Trash2,
   User,
   ArrowLeft,
-  Car
+  Car,
+  Truck,
+  Bus
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -62,7 +61,6 @@ const SettingsSection = ({ title, icon: Icon, children }: SettingsSectionProps) 
 const Settings = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [theme, setTheme] = useState("dark");
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [pushNotifications, setPushNotifications] = useState(true);
@@ -161,7 +159,6 @@ const Settings = () => {
 
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto space-y-6">
-          {/* License Type */}
           <SettingsSection title="License Type" icon={Car}>
             <div className="space-y-6">
               <div>
@@ -177,25 +174,25 @@ const Settings = () => {
                   value={selectedLicense}
                   onValueChange={handleLicenseChange}
                 >
-                  <SelectTrigger className="w-full md:w-[280px]">
+                  <SelectTrigger className="w-full md:w-[280px] bg-background border-white/20">
                     <SelectValue placeholder="Select a license type" />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="code_8">
+                  <SelectContent className="bg-background/95 backdrop-blur-lg border border-white/20">
+                    <SelectItem value="code_8" className="focus:bg-white/10 focus:text-white">
                       <div className="flex items-center gap-2">
                         <Car className="h-4 w-4" />
                         <span>Code 8 (Light Motor Vehicle)</span>
                       </div>
                     </SelectItem>
-                    <SelectItem value="code_10">
+                    <SelectItem value="code_10" className="focus:bg-white/10 focus:text-white">
                       <div className="flex items-center gap-2">
-                        <Car className="h-4 w-4" />
+                        <Truck className="h-4 w-4" />
                         <span>Code 10 (Heavy Motor Vehicle)</span>
                       </div>
                     </SelectItem>
-                    <SelectItem value="code_14">
+                    <SelectItem value="code_14" className="focus:bg-white/10 focus:text-white">
                       <div className="flex items-center gap-2">
-                        <Car className="h-4 w-4" />
+                        <Bus className="h-4 w-4" />
                         <span>Code 14 (Extra Heavy Motor Vehicle)</span>
                       </div>
                     </SelectItem>
@@ -205,33 +202,7 @@ const Settings = () => {
             </div>
           </SettingsSection>
 
-          {/* Appearance */}
           <SettingsSection title="Appearance" icon={Eye}>
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <Label>Theme</Label>
-                <p className="text-sm text-muted-foreground">Choose your preferred theme</p>
-              </div>
-              <RadioGroup
-                value={theme}
-                onValueChange={setTheme}
-                className="flex items-center gap-4"
-              >
-                <div className="flex items-center gap-2">
-                  <RadioGroupItem value="light" id="light" />
-                  <Label htmlFor="light" className="flex items-center gap-1">
-                    <Sun className="h-4 w-4" /> Light
-                  </Label>
-                </div>
-                <div className="flex items-center gap-2">
-                  <RadioGroupItem value="dark" id="dark" />
-                  <Label htmlFor="dark" className="flex items-center gap-1">
-                    <Moon className="h-4 w-4" /> Dark
-                  </Label>
-                </div>
-              </RadioGroup>
-            </div>
-
             <div className="flex items-center justify-between">
               <div className="space-y-1">
                 <Label>Language</Label>
@@ -253,7 +224,6 @@ const Settings = () => {
             </div>
           </SettingsSection>
 
-          {/* Notifications */}
           <SettingsSection title="Notifications" icon={Bell}>
             <div className="flex items-center justify-between">
               <div className="space-y-1">
@@ -291,7 +261,6 @@ const Settings = () => {
             </div>
           </SettingsSection>
 
-          {/* Sound & Feedback */}
           <SettingsSection title="Sound & Feedback" icon={Volume2}>
             <div className="flex items-center justify-between">
               <div className="space-y-1">
@@ -330,7 +299,6 @@ const Settings = () => {
             </div>
           </SettingsSection>
 
-          {/* Learning Preferences */}
           <SettingsSection title="Learning Preferences" icon={BookOpen}>
             <div className="flex items-center justify-between">
               <div className="space-y-1">
@@ -355,7 +323,6 @@ const Settings = () => {
             </div>
           </SettingsSection>
 
-          {/* Account & Security */}
           <SettingsSection title="Account & Security" icon={Shield}>
             <Button
               variant="outline"
