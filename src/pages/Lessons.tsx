@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '../integrations/supabase/client';
@@ -229,9 +228,8 @@ const Lessons = () => {
             ) : (
               <Quiz
                 key="quiz"
-                question={selectedSubsection.questions[0]}
-                currentPosition={1}
-                onNext={handleQuizComplete}
+                questions={selectedSubsection.questions}
+                onComplete={handleQuizComplete}
                 lives={5}
               />
             )}
