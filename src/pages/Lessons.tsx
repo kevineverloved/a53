@@ -1,26 +1,52 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '../integrations/supabase/client';
 import { motion, AnimatePresence } from 'framer-motion';
 import StudyCard from '../components/StudyCard';
 import Quiz from '../components/Quiz';
+import { Button } from '../components/ui/button';
+import { ArrowLeft } from 'lucide-react';
+
+interface Lesson {
+  title: string;
+  content: Array<{
+    title: string;
+    front: string;
+    back: string;
+  }>;
+  questions: Array<{
+    question: string;
+    options: string[];
+    correctAnswer: string;
+  }>;
+}
+
+interface Section {
+  id: number;
+  title: string;
+  content_type: string | null;
+  description: string | null;
+  license_type: string | null;
+  order_number: number;
+  subject: string | null;
+}
 
 const Lessons = () => {
   const [searchParams] = useSearchParams();
   const section = searchParams.get('section');
   const lessonId = searchParams.get('lesson');
   
-  const [selectedSection, setSelectedSection] = useState(section || null);
-  const [selectedSubsection, setSelectedSubsection] = useState(null);
-  const [lessonData, setLessonData] = useState({});
+  const [selectedSection, setSelectedSection] = useState<string | null>(section);
+  const [selectedSubsection, setSelectedSubsection] = useState<Lesson | null>(null);
+  const [lessonData, setLessonData] = useState<Record<string, Record<string, Lesson[]>>>({});
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const [studyMode, setStudyMode] = useState(false);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [showQuiz, setShowQuiz] = useState(false);
   const navigate = useNavigate();
 
-  // Get the selected license type from localStorage
   const licenseType = localStorage.getItem('selectedLicense') || 'Class C';
 
   useEffect(() => {
@@ -62,11 +88,6 @@ const Lessons = () => {
                   title: 'Gear Shift',
                   front: 'What is the purpose of the gear shift?',
                   back: 'The gear shift allows you to change the vehicle\'s gears, controlling power delivery to the wheels. In automatic vehicles, common positions are: P (Park), R (Reverse), N (Neutral), D (Drive).'
-                },
-                {
-                  title: 'Dashboard Indicators',
-                  front: 'What are the most important dashboard warning lights to know?',
-                  back: 'Key warning lights include: Check Engine, Oil Pressure, Battery, Brake System, ABS, Airbag, and Temperature Warning. Red indicators typically indicate serious issues requiring immediate attention.'
                 }
               ],
               questions: [
@@ -79,16 +100,6 @@ const Lessons = () => {
                   question: 'In an automatic transmission vehicle, which pedal is on the right?',
                   options: ['Brake pedal', 'Clutch pedal', 'Accelerator pedal', 'Emergency brake'],
                   correctAnswer: 'Accelerator pedal'
-                },
-                {
-                  question: 'What does the "P" position on an automatic transmission stand for?',
-                  options: ['Power', 'Park', 'Pause', 'Push'],
-                  correctAnswer: 'Park'
-                },
-                {
-                  question: 'Which dashboard warning light color typically indicates the most serious issues?',
-                  options: ['Yellow', 'Green', 'Blue', 'Red'],
-                  correctAnswer: 'Red'
                 }
               ]
             }
@@ -96,50 +107,43 @@ const Lessons = () => {
         }
       };
 
-      // Now fetch the rest of the sections from Supabase
+      // Now fetch sections from Supabase
       const { data: sections, error: sectionsError } = await supabase
         .from('sections')
         .select('*')
         .eq('license_type', licenseType)
-        .order('order');
+        .order('order_number');
 
       if (sectionsError) throw sectionsError;
-
-      const { data: subsections, error: subsectionsError } = await supabase
-        .from('subsections')
-        .select('*')
-        .eq('license_type', licenseType)
-        .order('order');
-
-      if (subsectionsError) throw subsectionsError;
 
       const { data: lessons, error: lessonsError } = await supabase
         .from('lessons')
         .select('*')
         .eq('license_type', licenseType)
-        .order('order');
+        .order('order_number');
 
       if (lessonsError) throw lessonsError;
 
-      const organizedData = sections.reduce((acc, section) => {
-        acc[section.title] = {};
+      // Organize the data
+      const organizedData = sections.reduce((acc: Record<string, Record<string, Lesson[]>>, section: Section) => {
+        if (!acc[section.title]) {
+          acc[section.title] = {};
+        }
         
-        const sectionSubsections = subsections.filter(
-          sub => sub.section_id === section.id
+        const sectionLessons = lessons.filter(
+          lesson => lesson.section_id === section.id
         );
 
-        sectionSubsections.forEach(subsection => {
-          acc[section.title][subsection.title] = lessons
-            .filter(lesson => lesson.subsection_id === subsection.id)
-            .map(lesson => ({
-              title: lesson.title,
-              content: lesson.content,
-              questions: lesson.questions || []
-            }));
-        });
+        if (sectionLessons.length > 0) {
+          acc[section.title]['Main'] = sectionLessons.map(lesson => ({
+            title: lesson.title,
+            content: [{ title: lesson.title, front: lesson.content, back: lesson.content }],
+            questions: []
+          }));
+        }
 
         return acc;
-      }, vehicleControlsContent); // Merge with our vehicle controls content
+      }, vehicleControlsContent);
 
       setLessonData(organizedData);
       setError(null);
@@ -151,7 +155,7 @@ const Lessons = () => {
     }
   };
 
-  const handleStartLesson = (lesson) => {
+  const handleStartLesson = (lesson: Lesson) => {
     setSelectedSubsection(lesson);
     setStudyMode(true);
     setCurrentCardIndex(0);
@@ -159,7 +163,7 @@ const Lessons = () => {
   };
 
   const handleNextCard = () => {
-    if (currentCardIndex + 1 < selectedSubsection.content.length) {
+    if (currentCardIndex + 1 < (selectedSubsection?.content.length ?? 0)) {
       setCurrentCardIndex(currentCardIndex + 1);
     } else {
       setShowQuiz(true);
@@ -189,20 +193,19 @@ const Lessons = () => {
     );
   }
 
-  if (studyMode) {
+  if (studyMode && selectedSubsection) {
     return (
       <div className="min-h-screen bg-gray-100 p-6">
         <div className="max-w-7xl mx-auto">
           <div className="mb-8">
-            <button
+            <Button
               onClick={() => setStudyMode(false)}
+              variant="ghost"
               className="flex items-center text-blue-600 hover:text-blue-700"
             >
-              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
+              <ArrowLeft className="w-5 h-5 mr-2" />
               Back to Lessons
-            </button>
+            </Button>
           </div>
           <AnimatePresence mode="wait">
             {!showQuiz ? (
@@ -216,8 +219,10 @@ const Lessons = () => {
             ) : (
               <Quiz
                 key="quiz"
-                questions={selectedSubsection.questions}
-                onComplete={handleQuizComplete}
+                question={selectedSubsection.questions[0]}
+                currentPosition={1}
+                onNext={handleQuizComplete}
+                lives={5}
               />
             )}
           </AnimatePresence>
@@ -239,7 +244,6 @@ const Lessons = () => {
         </div>
         
         <div className="grid md:grid-cols-12 gap-6">
-          {/* Sections Navigation */}
           <div className="md:col-span-3 bg-white rounded-lg shadow p-4">
             <h2 className="text-xl font-semibold mb-4">Sections</h2>
             <nav className="space-y-2">
@@ -264,7 +268,6 @@ const Lessons = () => {
             </nav>
           </div>
 
-          {/* Subsections */}
           <div className="md:col-span-9">
             {selectedSection ? (
               <div className="bg-white rounded-lg shadow p-6">
