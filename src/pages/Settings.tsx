@@ -7,6 +7,14 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Slider } from "@/components/ui/slider";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
   Bell,
   Moon,
   Sun,
@@ -39,20 +47,15 @@ interface SettingsSectionProps {
 
 const SettingsSection = ({ title, icon: Icon, children }: SettingsSectionProps) => {
   return (
-    <motion.div
-      initial={{ y: 20, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.3 }}
-      className="glass p-6 rounded-xl space-y-6"
-    >
-      <div className="flex items-center gap-2 pb-2 border-b border-white/10">
+    <Card className="glass">
+      <CardHeader className="flex flex-row items-center space-y-0 gap-2">
         <Icon className="h-5 w-5" />
-        <h3 className="text-lg font-bold">{title}</h3>
-      </div>
-      <div className="space-y-6">
+        <CardTitle>{title}</CardTitle>
+      </CardHeader>
+      <CardContent>
         {children}
-      </div>
-    </motion.div>
+      </CardContent>
+    </Card>
   );
 };
 
@@ -102,20 +105,18 @@ const Settings = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      // Update user progress with new license type
       const { error: progressError } = await supabase
         .from("user_progress")
         .upsert({
           user_id: user.id,
           license_type: newLicense,
-          last_position: 1, // Reset progress for new license
+          last_position: 1,
           points: 0
         })
         .eq('user_id', user.id);
 
       if (progressError) throw progressError;
 
-      // Update profiles table
       const { error: profileError } = await supabase
         .from("profiles")
         .update({ license_type: newLicense })
@@ -162,23 +163,44 @@ const Settings = () => {
         <div className="max-w-4xl mx-auto space-y-6">
           {/* License Type */}
           <SettingsSection title="License Type" icon={Car}>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between gap-4">
-                <div className="space-y-1.5">
-                  <Label className="text-base">Select Your License</Label>
+            <div className="space-y-6">
+              <div>
+                <div className="mb-4">
+                  <h4 className="text-sm font-medium leading-none mb-2">
+                    Select Your License
+                  </h4>
                   <p className="text-sm text-muted-foreground">
                     Choose which driver's license you want to learn
                   </p>
                 </div>
-                <select
+                <Select
                   value={selectedLicense}
-                  onChange={(e) => handleLicenseChange(e.target.value)}
-                  className="min-w-[200px] bg-transparent border border-input rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                  onValueChange={handleLicenseChange}
                 >
-                  <option value="code_8">Code 8 (Light Motor Vehicle)</option>
-                  <option value="code_10">Code 10 (Heavy Motor Vehicle)</option>
-                  <option value="code_14">Code 14 (Extra Heavy Motor Vehicle)</option>
-                </select>
+                  <SelectTrigger className="w-full md:w-[280px]">
+                    <SelectValue placeholder="Select a license type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="code_8">
+                      <div className="flex items-center gap-2">
+                        <Car className="h-4 w-4" />
+                        <span>Code 8 (Light Motor Vehicle)</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="code_10">
+                      <div className="flex items-center gap-2">
+                        <Car className="h-4 w-4" />
+                        <span>Code 10 (Heavy Motor Vehicle)</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="code_14">
+                      <div className="flex items-center gap-2">
+                        <Car className="h-4 w-4" />
+                        <span>Code 14 (Extra Heavy Motor Vehicle)</span>
+                      </div>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </SettingsSection>
