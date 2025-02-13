@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -13,6 +14,7 @@ import Onboarding from "./pages/Onboarding";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import LevelDetail from "./pages/LevelDetail";
+import Lessons from "./pages/Lessons";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +34,7 @@ const App = () => (
           <Route path="/onboarding" element={<Onboarding />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/lessons" element={<Lessons />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
