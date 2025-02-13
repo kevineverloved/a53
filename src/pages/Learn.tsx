@@ -230,13 +230,7 @@ const Learn = () => {
   );
 
   const handleGetStarted = () => {
-    navigate('/lessons', { 
-      state: { 
-        subject: 'Vehicle Controls',
-        autoStart: true,
-        lessonId: 'intro-controls'
-      }
-    });
+    navigate('/lessons');
   };
 
   if (isLoading) {
