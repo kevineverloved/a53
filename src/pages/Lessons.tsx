@@ -247,21 +247,40 @@ const Lessons = () => {
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.3 }}
-        className="sticky top-0 z-50 w-full backdrop-blur-md bg-background/75 border-b border-border"
+        className="sticky top-0 z-50 w-full backdrop-blur-md bg-background/75 border-b border-white/10"
       >
-        <div className="container mx-auto flex h-16 items-center justify-between px-4">
-          <h1 className="text-2xl font-syne font-bold text-gradient">
-            {licenseType} License Lessons
-          </h1>
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 glass px-3 py-1.5 rounded-full">
-              <Heart className="w-5 h-5 text-red-500" />
-              <span className="font-syne">5</span>
-            </div>
-            <div className="flex items-center gap-2 glass px-3 py-1.5 rounded-full">
-              <Trophy className="w-5 h-5 text-primary" />
-              <span className="font-syne">0</span>
-            </div>
+        <div className="container mx-auto flex h-16 items-center gap-4 px-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate(-1)}
+            className="mr-2"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <div className="flex-1">
+            <h1 className="text-2xl font-syne font-bold bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent">
+              {licenseType} License
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              Learn at your own pace
+            </p>
+          </div>
+          <div className="flex items-center gap-3">
+            <motion.div 
+              whileHover={{ scale: 1.05 }}
+              className="flex items-center gap-2 glass px-3 py-1.5 rounded-full"
+            >
+              <Heart className="w-4 h-4 text-red-500" />
+              <span className="font-syne text-sm">5</span>
+            </motion.div>
+            <motion.div 
+              whileHover={{ scale: 1.05 }}
+              className="flex items-center gap-2 glass px-3 py-1.5 rounded-full"
+            >
+              <Trophy className="w-4 h-4 text-primary" />
+              <span className="font-syne text-sm">0</span>
+            </motion.div>
           </div>
         </div>
       </motion.header>
