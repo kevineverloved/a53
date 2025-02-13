@@ -258,15 +258,15 @@ const Lessons = () => {
           >
             <ArrowLeft className="h-5 w-5" />
           </Button>
-          <div className="flex-1">
-            <h1 className="text-2xl font-syne font-bold bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent">
+          <div className="flex flex-col justify-center">
+            <h1 className="text-2xl font-syne font-bold bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent leading-tight">
               {licenseType} License
             </h1>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground leading-tight">
               Learn at your own pace
             </p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 ml-auto">
             <motion.div 
               whileHover={{ scale: 1.05 }}
               className="flex items-center gap-2 glass px-3 py-1.5 rounded-full"
