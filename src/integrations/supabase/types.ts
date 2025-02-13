@@ -45,6 +45,7 @@ export type Database = {
           id: number
           image_type: Database["public"]["Enums"]["image_type"] | null
           image_url: string | null
+          license_type: string | null
           order_number: number
           section_id: number | null
           subcategory: string | null
@@ -58,6 +59,7 @@ export type Database = {
           id?: number
           image_type?: Database["public"]["Enums"]["image_type"] | null
           image_url?: string | null
+          license_type?: string | null
           order_number: number
           section_id?: number | null
           subcategory?: string | null
@@ -71,6 +73,7 @@ export type Database = {
           id?: number
           image_type?: Database["public"]["Enums"]["image_type"] | null
           image_url?: string | null
+          license_type?: string | null
           order_number?: number
           section_id?: number | null
           subcategory?: string | null

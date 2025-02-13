@@ -130,14 +130,24 @@ const Lessons = () => {
           acc[section.title] = {};
         }
         
-        const sectionLessons = lessons.filter(
+        const sectionLessons = lessons?.filter(
           lesson => lesson.section_id === section.id
-        );
+        ) || [];
 
         if (sectionLessons.length > 0) {
           acc[section.title]['Main'] = sectionLessons.map(lesson => ({
             title: lesson.title,
-            content: [{ title: lesson.title, front: lesson.content, back: lesson.content }],
+            content: Array.isArray(lesson.content) 
+              ? lesson.content.map((item: string) => ({
+                  title: lesson.title,
+                  front: item,
+                  back: item
+                }))
+              : [{ 
+                  title: lesson.title,
+                  front: lesson.content,
+                  back: lesson.content 
+                }],
             questions: []
           }));
         }
