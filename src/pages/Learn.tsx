@@ -344,44 +344,29 @@ const Learn = () => {
             })}
           </div>
 
-          <div className="space-y-4">
-            <h2 className="text-2xl font-syne font-black">
-              {licenseType === 'code10' ? 'Truck Driving Rules' : 'Road Rules'}
-            </h2>
-          </div>
-
-          {/* Learning Path */}
-          <div className="space-y-6">
-            <h3 className="text-xl font-syne font-bold flex items-center gap-2">
-              <BookOpen className="w-5 h-5" />
-              Learning Path
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {learningPath.map((level) => (
-                <motion.div
-                  key={level.id}
-                  initial={{ scale: 0.9, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  whileHover={{ scale: 1.02 }}
-                  className="relative p-6 rounded-xl border border-primary/20 bg-white/10 space-y-4 cursor-pointer"
-                  onClick={handleGetStarted}
-                >
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-xl font-syne font-bold">{level.title}</h3>
-                    <div className="flex items-center gap-2">
-                      <Trophy className="w-4 h-4 text-primary" />
-                      <span className="text-sm">{level.totalPoints} points</span>
-                    </div>
-                  </div>
-                  <p className="text-sm text-gray-300">{level.description}</p>
-                  <Button className="w-full">
-                    Get Started
-                    <ArrowRight className="ml-2 w-4 h-4" />
-                  </Button>
-                </motion.div>
-              ))}
-            </div>
-          </div>
+          {/* Get Started Section */}
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            className="flex flex-col items-center justify-center space-y-4 py-8"
+          >
+            <h2 className="text-3xl font-syne font-bold text-center">Ready to Start Learning?</h2>
+            <p className="text-gray-300 text-center max-w-md">
+              Begin your journey to becoming a skilled driver with our comprehensive lessons
+            </p>
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Button
+                onClick={handleGetStarted}
+                className="px-8 py-6 text-lg font-syne shadow-lg bg-primary hover:bg-primary/90 transition-all duration-300"
+              >
+                Get Started
+                <ArrowRight className="ml-2 w-6 h-6" />
+              </Button>
+            </motion.div>
+          </motion.div>
 
           {/* Achievements */}
           <div className="space-y-6">
