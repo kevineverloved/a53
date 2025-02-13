@@ -163,15 +163,17 @@ const Settings = () => {
           {/* License Type */}
           <SettingsSection title="License Type" icon={Car}>
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                  <Label>Select Your License</Label>
-                  <p className="text-sm text-muted-foreground">Choose which driver's license you want to learn</p>
+              <div className="flex items-center justify-between gap-4">
+                <div className="space-y-1.5">
+                  <Label className="text-base">Select Your License</Label>
+                  <p className="text-sm text-muted-foreground">
+                    Choose which driver's license you want to learn
+                  </p>
                 </div>
                 <select
                   value={selectedLicense}
                   onChange={(e) => handleLicenseChange(e.target.value)}
-                  className="bg-transparent border border-input rounded-md px-3 py-2"
+                  className="min-w-[200px] bg-transparent border border-input rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   <option value="code_8">Code 8 (Light Motor Vehicle)</option>
                   <option value="code_10">Code 10 (Heavy Motor Vehicle)</option>
