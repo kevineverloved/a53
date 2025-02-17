@@ -1,14 +1,12 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Bell, Volume2, Languages, Shield, LogOut, ChevronRight, Smartphone, Mail, Eye, Clock, Vibrate, BookOpen, HelpCircle, Trash2, User, ArrowLeft, Car, Truck, Bus, Home, Settings as SettingsIcon } from "lucide-react";
+import { Bell, Volume2, Languages, Shield, LogOut, ChevronRight, Mail, Eye, Clock, Vibrate, BookOpen, HelpCircle, Trash2, User, ArrowLeft, Car, Truck, Bus, Home, Settings as SettingsIcon, BarChart2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -36,9 +34,8 @@ const SettingsSection = ({
 
 const Settings = () => {
   const navigate = useNavigate();
-  const {
-    toast
-  } = useToast();
+  const location = useLocation();
+  const { toast } = useToast();
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [pushNotifications, setPushNotifications] = useState(true);
@@ -292,7 +289,9 @@ const Settings = () => {
         <div className="grid grid-cols-4 h-full">
           <Button
             variant="ghost"
-            className="flex flex-col items-center justify-center gap-1 h-full rounded-none"
+            className={`flex flex-col items-center justify-center gap-1 h-full rounded-none ${
+              location.pathname === "/learn" ? "bg-white/10" : ""
+            }`}
             onClick={() => navigate("/learn")}
           >
             <BookOpen className="h-5 w-5" />
@@ -300,15 +299,19 @@ const Settings = () => {
           </Button>
           <Button
             variant="ghost"
-            className="flex flex-col items-center justify-center gap-1 h-full rounded-none"
+            className={`flex flex-col items-center justify-center gap-1 h-full rounded-none ${
+              location.pathname === "/progress" ? "bg-white/10" : ""
+            }`}
             onClick={() => navigate("/progress")}
           >
-            <Home className="h-5 w-5" />
-            <span className="text-xs">Home</span>
+            <BarChart2 className="h-5 w-5" />
+            <span className="text-xs">Progress</span>
           </Button>
           <Button
             variant="ghost"
-            className="flex flex-col items-center justify-center gap-1 h-full rounded-none"
+            className={`flex flex-col items-center justify-center gap-1 h-full rounded-none ${
+              location.pathname === "/profile" ? "bg-white/10" : ""
+            }`}
             onClick={() => navigate("/profile")}
           >
             <User className="h-5 w-5" />
@@ -316,7 +319,9 @@ const Settings = () => {
           </Button>
           <Button
             variant="ghost"
-            className="flex flex-col items-center justify-center gap-1 h-full rounded-none bg-white/5"
+            className={`flex flex-col items-center justify-center gap-1 h-full rounded-none ${
+              location.pathname === "/settings" ? "bg-white/10" : ""
+            }`}
           >
             <SettingsIcon className="h-5 w-5" />
             <span className="text-xs">Settings</span>
