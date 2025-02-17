@@ -8,6 +8,7 @@ import { Button } from '../components/ui/button';
 import { ArrowLeft, Heart, Trophy, BookOpen } from 'lucide-react';
 import { Progress } from '../components/ui/progress';
 import { Card, CardContent } from '@/components/ui/card';
+import { useToast } from '@/components/ui/use-toast';
 
 interface Lesson {
   title: string;
@@ -37,6 +38,7 @@ const Lessons = () => {
   const [searchParams] = useSearchParams();
   const section = searchParams.get('section');
   const lessonId = searchParams.get('lesson');
+  const { toast } = useToast();
   
   const [selectedSection, setSelectedSection] = useState<string | null>(section);
   const [selectedSubsection, setSelectedSubsection] = useState<Lesson | null>(null);
@@ -54,19 +56,10 @@ const Lessons = () => {
     fetchLessons();
   }, [licenseType]);
 
-  useEffect(() => {
-    if (section === 'vehicle-controls' && lessonId === 'intro-controls' && lessonData['Vehicle Controls']) {
-      const introLesson = Object.values(lessonData['Vehicle Controls'])[0]?.[0];
-      if (introLesson) {
-        setSelectedSection('Vehicle Controls');
-        handleStartLesson(introLesson);
-      }
-    }
-  }, [section, lessonId, lessonData]);
-
   const fetchLessons = async () => {
     try {
       setLoading(true);
+      setError(null);
       
       // First, let's add our vehicle controls content
       const vehicleControlsContent = {
@@ -115,7 +108,15 @@ const Lessons = () => {
         .eq('license_type', licenseType)
         .order('order_number');
 
-      if (sectionsError) throw sectionsError;
+      if (sectionsError) {
+        console.error('Error fetching sections:', sectionsError);
+        toast({
+          title: "Error",
+          description: "Failed to load sections. Please try again.",
+          variant: "destructive",
+        });
+        throw sectionsError;
+      }
 
       const { data: lessons, error: lessonsError } = await supabase
         .from('lessons')
@@ -123,10 +124,18 @@ const Lessons = () => {
         .eq('license_type', licenseType)
         .order('order_number');
 
-      if (lessonsError) throw lessonsError;
+      if (lessonsError) {
+        console.error('Error fetching lessons:', lessonsError);
+        toast({
+          title: "Error",
+          description: "Failed to load lessons. Please try again.",
+          variant: "destructive",
+        });
+        throw lessonsError;
+      }
 
       // Organize the data
-      const organizedData = sections.reduce((acc: Record<string, Record<string, Lesson[]>>, section: Section) => {
+      const organizedData = sections.reduce((acc: Record<string, Record<string, Lesson[]>>, section) => {
         if (!acc[section.title]) {
           acc[section.title] = {};
         }
@@ -161,6 +170,11 @@ const Lessons = () => {
     } catch (err) {
       console.error('Error fetching lessons:', err);
       setError('Failed to load lessons. Please try again later.');
+      toast({
+        title: "Error",
+        description: "Failed to load lessons. Please refresh the page.",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
