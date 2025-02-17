@@ -8,14 +8,16 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Bell, Volume2, Languages, Shield, LogOut, ChevronRight, Smartphone, Mail, Eye, Clock, Vibrate, BookOpen, HelpCircle, Trash2, User, ArrowLeft, Car, Truck, Bus } from "lucide-react";
+import { Bell, Volume2, Languages, Shield, LogOut, ChevronRight, Smartphone, Mail, Eye, Clock, Vibrate, BookOpen, HelpCircle, Trash2, User, ArrowLeft, Car, Truck, Bus, Home, Settings as SettingsIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+
 interface SettingsSectionProps {
   title: string;
   icon: any;
   children: React.ReactNode;
 }
+
 const SettingsSection = ({
   title,
   icon: Icon,
@@ -31,6 +33,7 @@ const SettingsSection = ({
       </CardContent>
     </Card>;
 };
+
 const Settings = () => {
   const navigate = useNavigate();
   const {
@@ -46,6 +49,7 @@ const Settings = () => {
   const [autoPlay, setAutoPlay] = useState(true);
   const [showTimer, setShowTimer] = useState(true);
   const [selectedLicense, setSelectedLicense] = useState("code_8");
+
   const handleSignOut = async () => {
     try {
       await supabase.auth.signOut();
@@ -63,6 +67,7 @@ const Settings = () => {
       });
     }
   };
+
   const handleDeleteAccount = async () => {
     toast({
       variant: "destructive",
@@ -70,6 +75,7 @@ const Settings = () => {
       description: "This feature is not yet implemented."
     });
   };
+
   const handleLicenseChange = async (newLicense: string) => {
     try {
       const {
@@ -107,7 +113,8 @@ const Settings = () => {
       });
     }
   };
-  return <div className="min-h-screen bg-background text-foreground">
+
+  return <div className="min-h-screen pb-20 bg-background text-foreground">
       <motion.header initial={{
       y: -20,
       opacity: 0
@@ -220,8 +227,6 @@ const Settings = () => {
               <Switch checked={soundEnabled} onCheckedChange={setSoundEnabled} />
             </div>
 
-            
-
             <div className="flex items-center justify-between">
               <div className="space-y-1">
                 <Label>Vibration</Label>
@@ -278,6 +283,47 @@ const Settings = () => {
           </SettingsSection>
         </div>
       </main>
+
+      <motion.nav
+        initial={{ y: 100 }}
+        animate={{ y: 0 }}
+        className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-background/95 backdrop-blur-lg border-t border-border"
+      >
+        <div className="grid grid-cols-4 h-full">
+          <Button
+            variant="ghost"
+            className="flex flex-col items-center justify-center gap-1 h-full rounded-none"
+            onClick={() => navigate("/learn")}
+          >
+            <BookOpen className="h-5 w-5" />
+            <span className="text-xs">Learn</span>
+          </Button>
+          <Button
+            variant="ghost"
+            className="flex flex-col items-center justify-center gap-1 h-full rounded-none"
+            onClick={() => navigate("/progress")}
+          >
+            <Home className="h-5 w-5" />
+            <span className="text-xs">Home</span>
+          </Button>
+          <Button
+            variant="ghost"
+            className="flex flex-col items-center justify-center gap-1 h-full rounded-none"
+            onClick={() => navigate("/profile")}
+          >
+            <User className="h-5 w-5" />
+            <span className="text-xs">Profile</span>
+          </Button>
+          <Button
+            variant="ghost"
+            className="flex flex-col items-center justify-center gap-1 h-full rounded-none bg-white/5"
+          >
+            <SettingsIcon className="h-5 w-5" />
+            <span className="text-xs">Settings</span>
+          </Button>
+        </div>
+      </motion.nav>
     </div>;
 };
+
 export default Settings;
