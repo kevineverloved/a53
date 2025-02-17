@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '../integrations/supabase/client';
@@ -41,6 +42,28 @@ const Lessons = () => {
   const navigate = useNavigate();
   const { progress } = useUserProgress();
   const licenseType = localStorage.getItem('selectedLicense') || 'Class C';
+
+  const handleNextCard = () => {
+    if (currentCardIndex + 1 < (selectedSubsection?.content.length ?? 0)) {
+      setCurrentCardIndex(currentCardIndex + 1);
+    } else {
+      setShowQuiz(true);
+    }
+  };
+
+  const handleQuizComplete = () => {
+    setStudyMode(false);
+    setSelectedSubsection(null);
+    setCurrentCardIndex(0);
+    setShowQuiz(false);
+  };
+
+  const handleStartLesson = (lesson: Lesson) => {
+    setSelectedSubsection(lesson);
+    setStudyMode(true);
+    setCurrentCardIndex(0);
+    setShowQuiz(false);
+  };
 
   useEffect(() => {
     fetchLessons();
@@ -169,28 +192,6 @@ const Lessons = () => {
     );
   }
 
-  const handleStartLesson = (lesson: Lesson) => {
-    setSelectedSubsection(lesson);
-    setStudyMode(true);
-    setCurrentCardIndex(0);
-    setShowQuiz(false);
-  };
-
-  const handleNextCard = () => {
-    if (currentCardIndex + 1 < (selectedSubsection?.content.length ?? 0)) {
-      setCurrentCardIndex(currentCardIndex + 1);
-    } else {
-      setShowQuiz(true);
-    }
-  };
-
-  const handleQuizComplete = () => {
-    setStudyMode(false);
-    setSelectedSubsection(null);
-    setCurrentCardIndex(0);
-    setShowQuiz(false);
-  };
-
   return (
     <div className="min-h-screen bg-background text-foreground">
       <motion.header
@@ -264,6 +265,7 @@ const Lessons = () => {
         </div>
       </div>
 
+      {/* Mobile Bottom Navigation */}
       <motion.nav
         initial={{ y: 100 }}
         animate={{ y: 0 }}
