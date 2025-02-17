@@ -1,3 +1,4 @@
+
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -16,41 +17,41 @@ export const useUserProgress = () => {
         .from("user_progress")
         .select("*")
         .eq("user_id", user.id)
-        .single();
+        .maybeSingle();
 
       if (error) {
-        if (error.code === "PGRST116") {
-          // No progress exists yet, create initial progress
-          const { data: newProgress, error: createError } = await supabase
-            .from("user_progress")
-            .insert({
-              user_id: user.id,
-              lives: 5,
-              points: 0,
-              last_position: 1,
-              completed: false
-            })
-            .select()
-            .single();
-
-          if (createError) {
-            toast({
-              title: "Error",
-              description: "Failed to create initial progress",
-              variant: "destructive",
-            });
-            throw createError;
-          }
-
-          return newProgress;
-        }
-
         toast({
           title: "Error",
           description: "Failed to fetch progress",
           variant: "destructive",
         });
         throw error;
+      }
+
+      if (!userProgress) {
+        // If no progress exists, create initial progress
+        const { data: newProgress, error: createError } = await supabase
+          .from("user_progress")
+          .upsert({
+            user_id: user.id,
+            lives: 5,
+            points: 0,
+            last_position: 1,
+            completed: false
+          })
+          .select()
+          .single();
+
+        if (createError) {
+          toast({
+            title: "Error",
+            description: "Failed to create initial progress",
+            variant: "destructive",
+          });
+          throw createError;
+        }
+
+        return newProgress;
       }
 
       return userProgress;
