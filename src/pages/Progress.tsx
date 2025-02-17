@@ -1,9 +1,29 @@
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Progress as ProgressBar } from "@/components/ui/progress";
 import { useUserProgress } from "@/hooks/useUserProgress";
-import { Trophy, Star, Timer, BookOpen, Award, Target, TrendingUp, Calendar, CheckCircle2, Clock, Brain, Zap, Lock, ArrowLeft, Home, User, Settings as SettingsIcon } from "lucide-react";
+import {
+  Trophy,
+  Star,
+  Timer,
+  BookOpen,
+  Award,
+  Target,
+  TrendingUp,
+  Calendar,
+  CheckCircle2,
+  Clock,
+  Brain,
+  Zap,
+  Lock,
+  ArrowLeft,
+  Home,
+  User,
+  Settings as SettingsIcon,
+  BarChart2
+} from "lucide-react";
+
 const ProgressCard = ({
   title,
   value,
@@ -36,6 +56,7 @@ const ProgressCard = ({
     </div>
     <p className="text-sm text-muted-foreground">{description}</p>
   </motion.div>;
+
 const AchievementBadge = ({
   title,
   icon: Icon,
@@ -60,6 +81,7 @@ const AchievementBadge = ({
         <Lock className="h-6 w-6 text-white/40" />
       </div>}
   </motion.div>;
+
 const MilestoneItem = ({
   title,
   date,
@@ -73,14 +95,17 @@ const MilestoneItem = ({
       <p className="text-sm text-muted-foreground">{date}</p>
     </div>
   </div>;
+
 const ProgressPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const {
     progress,
     sections,
     achievements
   } = useUserProgress();
-  const currentProgress = progress ? (progress.last_position - 1) / 100 * 100 : 0;
+  const currentProgress = progress ? ((progress.last_position - 1) / 100) * 100 : 0;
+
   const stats = [{
     title: "Total Progress",
     value: `${Math.round(currentProgress)}%`,
@@ -106,6 +131,7 @@ const ProgressPage = () => {
     color: "#0EA5E9",
     description: "Successfully completed tests"
   }];
+
   const badges = [{
     title: "Quick Learner",
     icon: Brain,
@@ -127,25 +153,28 @@ const ProgressPage = () => {
     color: "#0EA5E9",
     unlocked: false
   }];
+
   return <div className="min-h-screen bg-background text-foreground pb-16 md:pb-0">
-      <motion.header initial={{
-      y: -20,
-      opacity: 0
-    }} animate={{
-      y: 0,
-      opacity: 1
-    }} transition={{
-      duration: 0.3
-    }} className="sticky top-0 z-50 w-full backdrop-blur-md bg-background/75 border-b border-border">
+      <motion.header 
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.3 }}
+        className="sticky top-0 z-50 w-full backdrop-blur-md bg-background/75 border-b border-border"
+      >
         <div className="container mx-auto flex h-16 items-center gap-4 px-4">
-          
-          <h1 className="font-syne font-bold text-2xl mx-[111px]">Progress</h1>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate(-1)}
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <h1 className="text-2xl font-syne font-bold">Progress</h1>
         </div>
       </motion.header>
 
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto space-y-8">
-          {/* Overall Progress */}
           <motion.div initial={{
           y: 20,
           opacity: 0
@@ -173,7 +202,6 @@ const ProgressPage = () => {
             </div>
           </motion.div>
 
-          {/* Stats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {stats.map((stat, i) => <motion.div key={stat.title} initial={{
             scale: 0.95,
@@ -189,7 +217,6 @@ const ProgressPage = () => {
               </motion.div>)}
           </div>
 
-          {/* Achievements */}
           <motion.section initial={{
           y: 20,
           opacity: 0
@@ -220,7 +247,6 @@ const ProgressPage = () => {
             </div>
           </motion.section>
 
-          {/* Recent Milestones */}
           <motion.section initial={{
           y: 20,
           opacity: 0
@@ -242,7 +268,6 @@ const ProgressPage = () => {
             </div>
           </motion.section>
 
-          {/* Quick Actions */}
           <motion.div initial={{
           y: 20,
           opacity: 0
@@ -265,26 +290,49 @@ const ProgressPage = () => {
         </div>
       </main>
 
-      {/* Mobile Bottom Navigation */}
-      <motion.nav initial={{
-      y: 100
-    }} animate={{
-      y: 0
-    }} className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-background/95 backdrop-blur-lg border-t border-border">
+      <motion.nav
+        initial={{ y: 100 }}
+        animate={{ y: 0 }}
+        className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-background/95 backdrop-blur-lg border-t border-border"
+      >
         <div className="grid grid-cols-4 h-full">
-          <Button variant="ghost" className="flex flex-col items-center justify-center gap-1 h-full rounded-none" onClick={() => navigate("/learn")}>
+          <Button
+            variant="ghost"
+            className={`flex flex-col items-center justify-center gap-1 h-full rounded-none ${
+              location.pathname === "/learn" ? "bg-white/10" : ""
+            }`}
+            onClick={() => navigate("/learn")}
+          >
             <BookOpen className="h-5 w-5" />
             <span className="text-xs">Learn</span>
           </Button>
-          <Button variant="ghost" className="flex flex-col items-center justify-center gap-1 h-full rounded-none" onClick={() => navigate("/")}>
-            <Home className="h-5 w-5" />
-            <span className="text-xs">Home</span>
+          <Button
+            variant="ghost"
+            className={`flex flex-col items-center justify-center gap-1 h-full rounded-none ${
+              location.pathname === "/progress" ? "bg-white/10" : ""
+            }`}
+            onClick={() => navigate("/progress")}
+          >
+            <BarChart2 className="h-5 w-5" />
+            <span className="text-xs">Progress</span>
           </Button>
-          <Button variant="ghost" className="flex flex-col items-center justify-center gap-1 h-full rounded-none" onClick={() => navigate("/profile")}>
+          <Button
+            variant="ghost"
+            className={`flex flex-col items-center justify-center gap-1 h-full rounded-none ${
+              location.pathname === "/profile" ? "bg-white/10" : ""
+            }`}
+            onClick={() => navigate("/profile")}
+          >
             <User className="h-5 w-5" />
             <span className="text-xs">Profile</span>
           </Button>
-          <Button variant="ghost" className="flex flex-col items-center justify-center gap-1 h-full rounded-none" onClick={() => navigate("/settings")}>
+          <Button
+            variant="ghost"
+            className={`flex flex-col items-center justify-center gap-1 h-full rounded-none ${
+              location.pathname === "/settings" ? "bg-white/10" : ""
+            }`}
+            onClick={() => navigate("/settings")}
+          >
             <SettingsIcon className="h-5 w-5" />
             <span className="text-xs">Settings</span>
           </Button>
@@ -292,4 +340,5 @@ const ProgressPage = () => {
       </motion.nav>
     </div>;
 };
+
 export default ProgressPage;
