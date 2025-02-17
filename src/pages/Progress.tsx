@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -16,7 +17,11 @@ import {
   Clock,
   Brain,
   Zap,
-  Lock
+  Lock,
+  ArrowLeft,
+  Home,
+  User,
+  Settings as SettingsIcon
 } from "lucide-react";
 
 const ProgressCard = ({ title, value, icon: Icon, color, description }: any) => (
@@ -151,19 +156,22 @@ const ProgressPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground pb-16 md:pb-0">
       <motion.header 
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.3 }}
         className="sticky top-0 z-50 w-full backdrop-blur-md bg-background/75 border-b border-border"
       >
-        <div className="container mx-auto flex h-14 items-center justify-between px-4">
-          <Button variant="ghost" onClick={() => navigate("/learn")}>
-            Back to Learn
+        <div className="container mx-auto flex h-16 items-center gap-4 px-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate(-1)}
+          >
+            <ArrowLeft className="h-5 w-5" />
           </Button>
-          <h1 className="text-heading-1">Progress</h1>
-          <div className="w-[70px]" />
+          <h1 className="text-2xl font-syne font-bold">Progress</h1>
         </div>
       </motion.header>
 
@@ -291,6 +299,48 @@ const ProgressPage = () => {
           </motion.div>
         </div>
       </main>
+
+      {/* Mobile Bottom Navigation */}
+      <motion.nav
+        initial={{ y: 100 }}
+        animate={{ y: 0 }}
+        className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-background/95 backdrop-blur-lg border-t border-border"
+      >
+        <div className="grid grid-cols-4 h-full">
+          <Button
+            variant="ghost"
+            className="flex flex-col items-center justify-center gap-1 h-full rounded-none"
+            onClick={() => navigate("/learn")}
+          >
+            <BookOpen className="h-5 w-5" />
+            <span className="text-xs">Learn</span>
+          </Button>
+          <Button
+            variant="ghost"
+            className="flex flex-col items-center justify-center gap-1 h-full rounded-none"
+            onClick={() => navigate("/")}
+          >
+            <Home className="h-5 w-5" />
+            <span className="text-xs">Home</span>
+          </Button>
+          <Button
+            variant="ghost"
+            className="flex flex-col items-center justify-center gap-1 h-full rounded-none"
+            onClick={() => navigate("/profile")}
+          >
+            <User className="h-5 w-5" />
+            <span className="text-xs">Profile</span>
+          </Button>
+          <Button
+            variant="ghost"
+            className="flex flex-col items-center justify-center gap-1 h-full rounded-none"
+            onClick={() => navigate("/settings")}
+          >
+            <SettingsIcon className="h-5 w-5" />
+            <span className="text-xs">Settings</span>
+          </Button>
+        </div>
+      </motion.nav>
     </div>
   );
 };
