@@ -283,12 +283,7 @@ const Lessons = () => {
                   </div>
                 </CardContent>
               </Card> : <Card className="glass">
-                <CardContent className="p-6 text-center">
-                  <BookOpen className="w-12 h-12 mx-auto mb-4 text-primary/60" />
-                  <h2 className="text-xl font-syne">
-                    Select a section from the left to begin learning
-                  </h2>
-                </CardContent>
+                
               </Card>}
           </motion.div>
         </div>
