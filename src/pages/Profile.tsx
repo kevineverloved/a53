@@ -1,9 +1,10 @@
+
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { Trophy, Heart, Star, Timer, TrendingUp, Award, Target, BookOpen, ArrowLeft } from "lucide-react";
+import { Trophy, Heart, Star, Timer, TrendingUp, Award, Target, BookOpen, ArrowLeft, Home, Settings as SettingsIcon, User } from "lucide-react";
 import { MAX_HEARTS } from "@/types/learning";
 
 const Profile = () => {
@@ -193,17 +194,16 @@ const Profile = () => {
           <Button
             variant="ghost"
             className="flex flex-col items-center justify-center gap-1 h-full rounded-none"
-            onClick={() => navigate("/progress")}
+            onClick={() => navigate("/")}
           >
-            <TrendingUp className="h-5 w-5" />
-            <span className="text-xs">Progress</span>
+            <Home className="h-5 w-5" />
+            <span className="text-xs">Home</span>
           </Button>
           <Button
             variant="ghost"
             className="flex flex-col items-center justify-center gap-1 h-full rounded-none bg-white/10"
-            onClick={() => navigate("/profile")}
           >
-            <Award className="h-5 w-5" />
+            <User className="h-5 w-5" />
             <span className="text-xs">Profile</span>
           </Button>
           <Button
@@ -211,7 +211,7 @@ const Profile = () => {
             className="flex flex-col items-center justify-center gap-1 h-full rounded-none"
             onClick={() => navigate("/settings")}
           >
-            <Target className="h-5 w-5" />
+            <SettingsIcon className="h-5 w-5" />
             <span className="text-xs">Settings</span>
           </Button>
         </div>
