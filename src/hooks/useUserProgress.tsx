@@ -1,4 +1,3 @@
-
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -17,8 +16,6 @@ export const useUserProgress = () => {
         .from("user_progress")
         .select("*")
         .eq("user_id", user.id)
-        .order('created_at', { ascending: false })
-        .limit(1)
         .single();
 
       if (error) {
@@ -149,4 +146,3 @@ export const useUserProgress = () => {
     updateProgress,
   };
 };
-
