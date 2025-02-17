@@ -17,41 +17,43 @@ export const useUserProgress = () => {
         .from("user_progress")
         .select("*")
         .eq("user_id", user.id)
-        .maybeSingle();
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single();
 
-      if (error && error.code !== "PGRST116") {
+      if (error) {
+        if (error.code === "PGRST116") {
+          // No progress exists yet, create initial progress
+          const { data: newProgress, error: createError } = await supabase
+            .from("user_progress")
+            .insert({
+              user_id: user.id,
+              lives: 5,
+              points: 0,
+              last_position: 1,
+              completed: false
+            })
+            .select()
+            .single();
+
+          if (createError) {
+            toast({
+              title: "Error",
+              description: "Failed to create initial progress",
+              variant: "destructive",
+            });
+            throw createError;
+          }
+
+          return newProgress;
+        }
+
         toast({
           title: "Error",
           description: "Failed to fetch progress",
           variant: "destructive",
         });
         throw error;
-      }
-
-      // If no progress exists, create initial progress
-      if (!userProgress) {
-        const { data: newProgress, error: createError } = await supabase
-          .from("user_progress")
-          .insert({
-            user_id: user.id,
-            lives: 5,
-            points: 0,
-            last_position: 1,
-            completed: false
-          })
-          .select()
-          .single();
-
-        if (createError) {
-          toast({
-            title: "Error",
-            description: "Failed to create initial progress",
-            variant: "destructive",
-          });
-          throw createError;
-        }
-
-        return newProgress;
       }
 
       return userProgress;
