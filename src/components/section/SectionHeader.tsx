@@ -12,25 +12,22 @@ const SectionHeader = ({ currentLessonIndex, subject }: SectionHeaderProps) => {
   const navigate = useNavigate();
 
   return (
-    <header className="sticky top-0 z-50 w-full backdrop-blur-md bg-black/75 border-b border-white/10">
-      <div className="container mx-auto flex h-14 items-center justify-between px-4">
-        <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => navigate("/learn")}
-            className="mr-2"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </Button>
-          <div className="flex flex-col">
-            <span className="font-georgia text-2xl font-bold">
-              Lesson {currentLessonIndex + 1}
-            </span>
-            <span className="text-sm text-gray-400">
-              Subject: {subject}
-            </span>
-          </div>
+    <header className="sticky top-0 z-50 w-full backdrop-blur-md bg-background/75 border-b border-border">
+      <div className="container mx-auto flex h-16 items-center gap-4 px-4">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => navigate(-1)}
+        >
+          <ArrowLeft className="h-5 w-5" />
+        </Button>
+        <div className="flex flex-col">
+          <span className="font-syne text-xl font-bold">
+            Lesson {currentLessonIndex + 1}
+          </span>
+          <span className="text-sm text-muted-foreground">
+            {subject}
+          </span>
         </div>
       </div>
     </header>

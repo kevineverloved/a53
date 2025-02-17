@@ -26,13 +26,11 @@ const LevelDetail = () => {
   const [currentSection, setCurrentSection] = useState<Section | null>(null);
 
   useEffect(() => {
-    // Find the level from learningPath data
     const foundLevel = learningPath.find(l => l.id === Number(levelId));
     if (foundLevel) {
       setLevel(foundLevel);
     }
 
-    // Fetch user progress
     const fetchUserProgress = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
@@ -107,36 +105,10 @@ const LevelDetail = () => {
       >
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
           <div className="flex items-center gap-4">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <Menu className="h-5 w-5" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-56">
-                <DropdownMenuItem onClick={() => navigate("/profile")}>
-                  <User className="mr-2 h-4 w-4" />
-                  Profile
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate("/settings")}>
-                  <Settings className="mr-2 h-4 w-4" />
-                  Settings
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate("/progress")}>
-                  <TrendingUp className="mr-2 h-4 w-4" />
-                  Progress
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => navigate("/help")}>
-                  <Info className="mr-2 h-4 w-4" />
-                  Help & Support
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => navigate("/learn")}
+              onClick={() => navigate(-1)}
             >
               <ArrowLeft className="h-5 w-5" />
             </Button>
@@ -157,7 +129,6 @@ const LevelDetail = () => {
 
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto space-y-8">
-          {/* Level Progress */}
           <motion.div
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -182,7 +153,6 @@ const LevelDetail = () => {
             </div>
           </motion.div>
 
-          {/* Sections */}
           <div className="space-y-4">
             {level.sections.map((section) => (
               <SectionCard key={section.id} section={section} />
@@ -194,4 +164,4 @@ const LevelDetail = () => {
   );
 };
 
-export default LevelDetail; 
+export default LevelDetail;

@@ -61,7 +61,6 @@ const Lessons = () => {
       setLoading(true);
       setError(null);
       
-      // First, let's add our vehicle controls content
       const vehicleControlsContent = {
         'Vehicle Controls': {
           'Basic Controls': [
@@ -101,7 +100,6 @@ const Lessons = () => {
         }
       };
 
-      // Now fetch sections from Supabase
       const { data: sections, error: sectionsError } = await supabase
         .from('sections')
         .select('*')
@@ -134,7 +132,6 @@ const Lessons = () => {
         throw lessonsError;
       }
 
-      // Organize the data
       const organizedData = sections.reduce((acc: Record<string, Record<string, Lesson[]>>, section) => {
         if (!acc[section.title]) {
           acc[section.title] = {};
@@ -261,17 +258,17 @@ const Lessons = () => {
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.3 }}
-        className="sticky top-0 z-50 w-full backdrop-blur-md bg-background/75 border-b border-white/10"
+        className="sticky top-0 z-50 w-full backdrop-blur-md bg-background/75 border-b border-border"
       >
         <div className="container mx-auto flex h-16 items-center gap-4 px-4">
           <Button
             variant="ghost"
             size="icon"
             onClick={() => navigate(-1)}
-            className="mr-2"
           >
             <ArrowLeft className="h-5 w-5" />
           </Button>
+          <h1 className="text-2xl font-syne font-bold">Learn</h1>
           <div className="flex flex-col justify-center">
             <h1 className="text-2xl font-syne font-bold bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent leading-tight">
               {licenseType} License
